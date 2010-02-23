@@ -1,7 +1,6 @@
 #!/bin/sh
 #
 # Written by Denilson Figueiredo de Sa <denilsonsa@gmail.com>
-# 2008-01-16 - Second version written and released.
 
 THISSCRIPT=`basename $0`
 
@@ -9,7 +8,7 @@ print_help() {
 	cat << EOF
 Usage: $THISSCRIPT <interface|all|realip> [ -imnh ]
 Where:
-  interface  print info only from the interface passed as argument
+  interface  print info only from the interface passed as argument (e.g. eth0)
   all        print info from all available interfaces
   realip     use an external HTTP service to discover the external IP address
 
