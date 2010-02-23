@@ -1,60 +1,59 @@
-#!/bin/bash
-
-ABOUT='fat2ext.sh - version 1.2 - 2005-10-04
-Created by Denilson F. de Sa'
-# 
-# This thing fix the permissions after you copy anything
-# from a FAT partition to a ext2/ext3 one.
-# 
-# In fact, this script will change all directories permissions
-# to 755 and all files to 644. Any previous special permissions
-# are discarded.
+#!/bin/sh
 #
-# 755 and 644 are the default permissions. They can be changed
-# using command-line parameters.
-
+# Written by Denilson Figueiredo de Sa <denilsonsa@gmail.com>
+# 2008-01-16 - Fourth version.
+# 2005-10-04 - Second and third versions written. (or maybe the
+#              modification dates of the old versions are just wrong)
+# 2003-11-16 - First version written.
 
 # TODO / WishList
-# Create two more command-line options to ONLY change
-# files/directories that have <supplied> permissions.
+# - Create two more command-line options to ONLY change
+#   files/directories that have <supplied> permissions.
+#   (reason why I haven't implemented this yet: I never really needed this)
+# - Test if the permissions passed by user are sane.
 
+MYNAME=`basename "$0"`
 
-FILES=644
-DIRS=755
-VERBOSE=""
-#VERBOSE="-v"
+print_help() {
+	cat << EOF
+Usage: $MYNAME <directory> [ file_perms  dir_perms ]
+Where:
+  directory   The directory to recursively apply the permissions. Use "." for
+              current directory.
+  file_perms  The permissions to be applied to files. (default: 644)
+  dir_perms   The permissions to be applied to directories. (default: 755)
 
+This script is meant to fix the permissions after copying files (and
+directories) from filesystems that don't support UNIX-style permissions (like
+FAT).
 
-print_help()
-{
-echo "$ABOUT"
-echo
-echo "Usage:" `basename $0` " <directory> [ file_permissions  dir_permissions ]"
-echo "Default permissions are 644 for files and 755 for directories"
+This script will recursively apply the specified permissions to all files
+and directories inside the specified directory. Be careful to not change
+permissions of things you don't want to change. BE EXTRA CAREFUL IF YOU TRY TO
+RUN THIS AS ROOT.
+EOF
 }
 
 
-if [[ ($# != 3 && $# != 1) || "$1" == "-help" || "$1" == "--help" || "$1" == "-h" || "$1" == "-?" ]]; then
+if [ -z "$1" -o "$1" = "--help" -o "$1" = "-help" -o "$1" = "-h" ]; then
 	print_help
+elif [ $# != 3 -a $# != 1 ]; then
+	echo "$MYNAME: Incorrect number of parameters."
+	exit 1
 else
 
 	if [ "$3" != "" ]; then
-		FILES="$2"
-		DIRS="$3"
+		FILEPERMS="$2"
+		DIRPERMS="$3"
+	else
+		FILEPERMS=644
+		DIRPERMS=755
 	fi
 
 	#This will give read permission to all files (and directories).
 	#After this command, 'find' will be able to access the entire directory tree.
 	chmod -R +rx "$1"
 
-	find "$1" | ( while read line; do
-		if [ -d "$line" ] ;	then
-			chmod $VERBOSE "$DIRS" "$line"
-		elif [ -f "$line" ] ; then
-			chmod $VERBOSE "$FILES" "$line"
-		else
-			echo "Warning: '$line' is not a directory and is not a regular file."
-		fi
-	done )
-
+	find "$1" -type f -exec chmod "$FILEPERMS" '{}' ';'
+	find "$1" -type d -exec chmod "$DIRPERMS"  '{}' ';'
 fi
