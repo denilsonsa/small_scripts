@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# Written by Denilson Figueiredo de Sa <denilsonsa@gmail.com>
+
+MYNAME=gocomp
+
+GOCOMPILER=6g
+GOLINKER=6l
+
+print_help() {
+	echo "Usage: ${MYNAME} [-o <output>] <source>"
+	echo ""
+	echo "This script will save intermediary object files with .o extension"
+	echo "(instead of Go's own numeric extensions)"
+}
+
+
+parse_parameters() {
+	SOURCES=()
+	OUTPUT=""
+	AUTOOUTPUT=""
+
+	if [ $# == 0 ] ; then
+		print_help
+		exit 1
+	fi
+
+	while [ $# != 0 ] ; do
+		case $1 in
+			-h|-\?|--help)
+				print_help
+				exit 0
+				;;
+			-o)
+				if (( $# >= 2 )) ; then
+					OUTPUT="$2"
+					shift
+				else
+					echo "${MYNAME}: Argument to '-o' is missing."
+					exit 1
+				fi
+				;;
+			-*)
+				echo "${MYNAME}: unrecognized option '$1'"
+				exit 1
+				;;
+			*)
+				# Setting the AUTOOUTPUT name...
+				if [ "$AUTOOUTPUT" == "" ] ; then
+					AUTOOUTPUT="${1%.go}.out"
+				fi
+				# ...and adding to the SOURCES list
+				SOURCES+=("$1")
+				;;
+		esac
+
+		shift
+	done
+
+	if [ "$OUTPUT" == "" ] ; then
+		OUTPUT="$AUTOOUTPUT"
+	fi
+}
+
+
+do_compile() {
+	local SRC OBJ
+	OBJECTS=()
+
+	for SRC in "${SOURCES[@]}" ; do
+		OBJ="${SRC%.go}.o"
+		OBJECTS+=("$OBJ")
+		"$GOCOMPILER" -o "$OBJ" "$SRC"
+	done
+}
+
+do_link() {
+	"$GOLINKER" -o "$OUTPUT" "${OBJECTS[@]}"
+}
+
+
+# MAIN CODE HERE
+
+parse_parameters "$@"
+do_compile
+do_link
