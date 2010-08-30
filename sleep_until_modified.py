@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
+# TODO list:
+#  * Add support for pyinotify (falling back to dumb polling if it's not
+#    available)
+#  * Add support for monitoring multiple files, instead of just one.
+
 import getopt
 import os
 import os.path
@@ -10,15 +15,16 @@ import time
 
 
 available_parameters = [
-    ("h","help","Print help"),
-    ("i:","interval=","Defines the polling interval (default=1)"),
+    ("h", "help", "Print help"),
+    ("i:","interval=", "Defines the polling interval, in seconds (default=1.0)"),
 ]
 
 
 class ProgramOptions(object):
+    """Holds the program options, after they are parsed by parse_options()"""
+
     def __init__(self):
         self.poll_interval = 1
-        self.print_help = False
         self.args = []
 
 
