@@ -19,6 +19,12 @@
 #   ln -s aterm.sh bigaterm.sh
 
 
+# http://www.lesswatts.org/projects/powertop/known.php#xterm
+# xterms are waking up once per second when totally idle. It seems the periodic
+# idle wakeups are due to xterm checking for session management events. Adding
+# the +sm option, or setting the resource sessionMgt to false, stops the
+# periodic tick.
+
 # -u8 is auto-detected if locale has UTF-8
 COMMON="-rv -ls +sb -sl 1000 +sm"
 NORMALSIZE="-font 6x13 -geometry 80x25"
