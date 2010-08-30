@@ -2,17 +2,97 @@
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
+import getopt
 import os
+import os.path
 import sys
 import time
 
 
+available_parameters = [
+    ("h","help","Print help"),
+    ("i:","interval=","Defines the polling interval (default=1)"),
+]
+
+
+class ProgramOptions(object):
+    def __init__(self):
+        self.poll_interval = 1
+        self.print_help = False
+        self.args = []
+
+
+def print_help():
+    scriptname = os.path.basename(sys.argv[0])
+    print "Usage: {0} [options] filename".format(scriptname)
+    print "Sleeps until 'filename' has been modified."
+    print ""
+    print "Options:"
+    long_length = 2 + max(len(long) for x,long,y in available_parameters)
+    for short, long, desc in available_parameters:
+        if short and long:
+            comma = ", "
+        else:
+            comma = "  "
+
+        if short == "":
+            short = "  "
+        else:
+            short = "-" + short[0]
+
+        if long:
+            long = "--" + long
+
+        print "  {0}{1}{2:{3}}  {4}".format(short,comma,long,long_length, desc)
+
+    print ""
+    print "Currently, it is implemented using polling. In future, support for pyinotify might be added."
+
+
+def parse_options(argv, opt):
+    """argv should be sys.argv[1:]
+    opt should be an instance of ProgramOptions()"""
+
+    try:
+        opts, args = getopt.getopt(
+            argv,
+            "".join(short for short,x,y in available_parameters),
+            [long for x,long,y in available_parameters]
+        )
+    except getopt.GetoptError as e:
+        print str(e)
+        print "Use --help for usage instructions."
+        sys.exit(2)
+
+    for o,v in opts:
+        if o in ("-h", "--help"):
+            print_help()
+            sys.exit(0)
+        elif o in ("-i", "--interval"):
+            opt.poll_interval = float(v)
+        else:
+            print "Invalid parameter: {0}".format(o)
+            print "Use --help for usage instructions."
+            sys.exit(2)
+
+    opt.args = args
+    if len(args) == 0:
+        print "Missing filename"
+        print "Use --help for usage instructions."
+        sys.exit(2)
+    if len(args) > 1:
+        print "Currently, this script monitors only one file, but {0} files were given. Aborting.".format(len(args))
+        sys.exit(2)
+
+
 def main():
-    file = sys.argv[1]
+    opt = ProgramOptions()
+    parse_options(sys.argv[1:], opt)
+
+    file = opt.args[0]
     prev_time = os.stat(file).st_mtime
-    poll_interval = 1
     while True:
-        time.sleep(poll_interval)
+        time.sleep(opt.poll_interval)
         new_time = os.stat(file).st_mtime
         if new_time != prev_time:
             break
