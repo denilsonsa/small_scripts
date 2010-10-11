@@ -5,6 +5,10 @@
 # Okay, this code is a bit ugly, with a few "anti-patterns" and "code smell".
 # But it works and I don't want to refactor it *right now*.
 
+# TODO:
+#  * Refactor it a little
+#  * Add support for custom filename filter (instead of the hardcoded one)
+
 
 import getopt
 import fnmatch
@@ -35,6 +39,7 @@ class ProgramOptions(object):
 
 
 def print_help():
+    global opt
     scriptname = os.path.basename(sys.argv[0])
     print "Usage: {0} [options] files_or_directories".format(scriptname)
     print "Recursively checks for corrupt JPEG files"
@@ -56,6 +61,10 @@ def print_help():
             long = "--" + long
 
         print "  {0}{1}{2:{3}}  {4}".format(short,comma,long,long_length, desc)
+
+    print ""
+    print "Currently (it is hardcoded), it only checks for these files:"
+    print "  " + " ".join(opt.globs)
 
 
 def parse_options(argv, opt):
