@@ -7,7 +7,11 @@ import os.path
 import subprocess
 import sys
 
+# Old, deprecated /proc/acpi path
 HARDCODED_PATH = "/proc/acpi/video/VGA/LCDD/brightness"
+# New, /sys path
+# However... This script must be rewritten to work with /sys/ interface
+# HARDCODED_PATH = "/sys/class/backlight/acpi_video0/brightness"
 
 HARCODED_SUDO_SCRIPT = "/usr/local/bin/set_lcd_brightness.sh"
 # The script contents:
