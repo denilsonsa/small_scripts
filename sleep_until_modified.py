@@ -53,6 +53,9 @@ def print_help():
 
     print ""
     print "Currently, it is implemented using polling. In future, support for pyinotify might be added."
+    print ""
+    print "Sample usage command-line:"
+    print "  while sleep_until_modified.py myfile.tex || sleep 1; do make ; done "
 
 
 def parse_options(argv, opt):
