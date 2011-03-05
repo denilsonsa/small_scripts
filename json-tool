@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# How to pretty-print JSON script?
+#   echo '{"foo": "lorem", "bar": "ipsum"}' | python -mjson.tool
+#
+# http://stackoverflow.com/questions/352098/how-to-pretty-print-json-script/1920585#1920585
+
+python -mjson.tool
