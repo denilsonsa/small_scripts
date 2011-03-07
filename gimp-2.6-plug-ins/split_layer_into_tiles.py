@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
+# This script is also available on "GIMP Plugin Registry"
+# http://registry.gimp.org/node/25110
+
 # Thanks to gwidion (Joao S. O. Bueno) from #gimp channel
 # for getting me started with Gimp plugins!
 #
