@@ -40,6 +40,7 @@ def transpose_tileset(img, layer, tile_width, tile_height, keep_layer):
         NORMAL_MODE
     )
     img.add_layer(dest, -1)  # -1 => insert above current active layer
+    dest.set_offsets(x_off, y_off)
 
     # Making a copy of the old layer
     if keep_layer:
