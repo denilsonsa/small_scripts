@@ -3,7 +3,7 @@
 # vi:ts=4 sw=4 et
 
 # This script is also available on "GIMP Plugin Registry"
-# http://registry.gimp.org/node/PUT_HERE_THE_ID
+# http://registry.gimp.org/node/25111
 #
 # Tested on Gimp 2.6.11 with Python 2.6.6
 
