@@ -4,6 +4,8 @@
 
 # This script is also available on "GIMP Plugin Registry"
 # http://registry.gimp.org/node/25110
+#
+# Tested on Gimp 2.6.11 with Python 2.6.6
 
 # Thanks to gwidion (Joao S. O. Bueno) from #gimp channel
 # for getting me started with Gimp plugins!
@@ -20,6 +22,8 @@ def split_layer_into_tiles(img, layer, tile_width, tile_height):
     #    repr(layer.width), repr(layer.height),
     #    repr(layer.offsets[0]), repr(layer.offsets[1]),
     #)
+
+    pdb.gimp_image_undo_group_start(img)
 
     x_range = int(layer.width // tile_width)
     y_range = int(layer.height // tile_height)
@@ -46,6 +50,8 @@ def split_layer_into_tiles(img, layer, tile_width, tile_height):
 
             progress += progress_increment
             gimp.progress_update(progress)
+
+    pdb.gimp_image_undo_group_end(img)
 
 
 # Parameters to register()
