@@ -25,6 +25,47 @@ import sys
 import time
 
 
+# TODO: Implement a nice module for getting the terminal size.
+# * Should be similar to
+#   http://stackoverflow.com/questions/566746/how-to-get-console-window-width-in-python
+#   http://stackoverflow.com/questions/1022957/getting-terminal-width-in-c
+#   https://github.com/cldwalker/hirb/blob/master/lib/hirb/util.rb#L61-71
+# * Should have different methods of getting the size:
+#   - using ioctl call
+#   - calling either tput or stty
+#   - reading COLUMNS and LINES environment variables
+#   - fall-back to hard-coded default 80x24
+# * Should cache the working method once, so that future "updates" would call
+#   this method directly, instead of trying each one.
+# * When should the module update the internal size cache?
+#   - On every call. (reliable, but quite an overhead)
+#   - Upon receiving SIGWINCH signal. (nice, very little overhead, but might
+#     be undesirable)
+#   - Manually. (a "force reload" or something must be called)
+# * Find out how to get the size in Windows.
+
+def test_sigwinch():
+    # Note: signal handling will interrupt the sleep function.
+
+    import signal
+    signal.signal(signal.SIGWINCH, lambda signum, frame: print("SIGWINCH received"))
+
+    source_dir = os.path.expanduser(u'~/btnokia/E:/Images')
+    dest_dir = os.path.expanduser(u'~/scripts/testing')
+
+    time.sleep(10)
+    print("slept")
+    time.sleep(10)
+    print("done")
+
+    c = 0
+    for i in xrange(10**8):
+        c += 1
+    print(c)
+
+    return
+
+
 class ProgressBar(object):
     '''Simple one-line ASCII-art progress bar.
 
@@ -83,9 +124,6 @@ class ProgressBar(object):
 
 
 def main():
-    source_dir = os.path.expanduser(u'~/btnokia/E:/Images')
-    dest_dir = os.path.expanduser(u'~/scripts/testing')
-
     # TODO: Implement a better handling of non-existent destination directory
     for dir in [source_dir, dest_dir]:
         if not os.path.isdir(dir):
