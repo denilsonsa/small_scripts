@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# DAMN flash player...
+# http://forum.tinycorelinux.net/index.php?topic=11020.0
+
+export LD_PRELOAD=/usr/local/lib/libv4l/v4l1compat.so
+"$@"
