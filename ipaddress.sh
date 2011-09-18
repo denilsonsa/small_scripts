@@ -39,7 +39,17 @@ elif [ "$1" = "realip" ]; then
 	else
 		# Uncomment the service you want to use
 		wget -q -O - http://checkip.dyndns.org/ | sed -n 's/^.*Current IP Address: *\([0-9.]\+\).*$/\1/p'
+
+		# <!--Do not scrape your IP from here, go to www.whatismyip.com/faq/automation.asp for more information on our automation rules.-->
 		#wget -q -O - http://www.whatismyip.com/ | sed -n '/Your \+IP \+Is/{;s/^.*Your \+IP \+Is \+\([0-9.]\+\).*$/\1/p;q;}'
+
+		#wget -q -O - http://automation.whatismyip.com/n09230945.asp
+
+		# Other services:
+		# http://checkmyip.org/
+		# http://checkmyip.com/
+		# However, the next one shows the IP behind the proxy:
+		# http://www.checkmyip.net/
 	fi
 
 else
