@@ -1,6 +1,11 @@
 #!/bin/sh
 #
 # Written by Denilson Figueiredo de Sa <denilsonsa@gmail.com>
+#
+# Future ideas:
+# * Rewrite this to use iproute2 tools:
+#   ip link show
+#   ip address show
 
 THISSCRIPT=`basename $0`
 
