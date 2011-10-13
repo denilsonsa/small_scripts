@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Written by Denilson Figueiredo de Sa <denilsonsa@gmail.com>
+# 2011-10-13 - Added more unicode support.
 # 2008-01-16 - Added this changelog. :)
 # 2005-??-?? - First version written.
 
@@ -26,10 +27,16 @@
 # periodic tick.
 
 # -u8 is auto-detected if locale has UTF-8
-COMMON="-rv -ls +sb -sl 1000 +sm"
-NORMALSIZE="-font 6x13 -geometry 80x25"
+#COMMON="-rv -ls +sb -sl 1000 +sm"
+# Anyway, I'm adding the same options as uxterm wrapper:
+COMMON="-rv -ls +sb -sl 1000 +sm -class UXTerm -u8"
+#NORMALSIZE="-font 6x13 -geometry 80x25"
 #BIGSIZE="-font 10x20 -geometry 95x37+0+0"
-BIGSIZE="-font 10x20 -geometry 95x37"
+#BIGSIZE="-font 10x20 -geometry 95x37"
+# The following fonts were extracted from "UXTerm.ad", and supposedly support
+# unicode characters. But maybe I should just start using True Type fonts.
+NORMALSIZE="-geometry 80x25 -font -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1"
+BIGSIZE="-geometry 95x37 -font -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1"
 
 SCRIPTNAME=`basename "$0"`
 
