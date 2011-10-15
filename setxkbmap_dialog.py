@@ -22,7 +22,7 @@
 #   xinput        1.5.3         http://xorg.freedesktop.org/
 #   xorg-server   1.10.4        http://xorg.freedesktop.org/
 #   xorg-x11      7.4           http://xorg.freedesktop.org/
- 
+
 
 from __future__ import print_function
 
@@ -104,8 +104,10 @@ def arg_to_shell_string(arg):
     # echo 'aaa'"'"'bbb' => aaa'bbb
     return "'" + arg.replace("'", "'\"'\"'") + "'"
 
+
 def args_to_cmdstring(args):
     return ' '.join(arg_to_shell_string(arg) for arg in args)
+
 
 def echo_run(args):
     '''Prints the commandline and then runs it.'''
