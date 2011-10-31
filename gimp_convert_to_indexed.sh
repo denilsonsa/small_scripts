@@ -12,6 +12,7 @@
 #  * Make this less ugly. :)
 #  * Maybe rewrite this in Python instead of bash. It would solve most of these issues.
 #  * Let the ccanalyze execution be optional
+#  * Optionally also flatten the image
 
 function print_help() {
 	echo "Usage: ./gimp_convert_to_indexed.sh INPUT.png OUTPUT.png"
