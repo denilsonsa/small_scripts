@@ -14,6 +14,9 @@ def parse_arguments():
         description='Locks/unlocks all applets from a gnome panel.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
+    # Maybe the next line is a good solution, but it gave me an exception when I
+    # tried to use it. Maybe I had an outdated argparse version.
+    #parser.add_mutually_exclusive_group(required=True)
     parser.add_argument(
         '-l', '--lock',
         action='store_true',
@@ -27,9 +30,11 @@ def parse_arguments():
     args = parser.parse_args()
 
     if args.lock and args.unlock:
-        parser.exit('Use either --lock or --unlock, but not both.')
+        parser.print_usage()
+        parser.exit('error: Use either --lock or --unlock, but not both.')
     elif (not args.lock) and (not args.unlock):
-        parser.exit('Use either --lock or --unlock.')
+        parser.print_usage()
+        parser.exit('error: Use either --lock or --unlock.')
 
     return args
 
