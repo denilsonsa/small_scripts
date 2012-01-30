@@ -54,6 +54,8 @@ def main():
     client.set_bool('/apps/panel/global/locked_down', locked_boolean)
     for path in client.all_dirs('/apps/panel/applets'):
         client.set_bool(path + '/locked', locked_boolean)
+    for path in client.all_dirs('/apps/panel/objects'):
+        client.set_bool(path + '/locked', locked_boolean)
 
 if __name__ == "__main__":
     main()
