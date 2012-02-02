@@ -14,12 +14,10 @@
 
 
 # Changes:
-# * Vertical scrolling is reversed (4<->5)
-# * Horizontal scrolling is reversed (6<->7)
 # * Side buttons are now middle-click (8,9 = 2)
 
 # For some reason, this command is giving me:
-#xmodmap -e 'pointer = 1 2 3 5 4 7 6 2 2'
+#xmodmap -e 'pointer = 1 2 3 4 5 6 7 2 2'
 # X Error of failed request:  BadValue (integer parameter out of range for operation)
 #   Major opcode of failed request:  116 (X_SetPointerMapping)
 #   Value in failed request:  0x2
@@ -33,7 +31,7 @@ if [ -z "$MOUSE_ID" ] ; then
   exit 1
 fi
 
-xinput set-button-map "$MOUSE_ID" 1 2 3 5 4 7 6 2 2
+xinput set-button-map "$MOUSE_ID" 1 2 3 4 5 6 7 2 2
 
 # See also:
 # https://github.com/cemmanouilidis/naturalscrolling
