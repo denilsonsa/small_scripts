@@ -11,7 +11,7 @@ import sys
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description='Locks/unlocks all panels and applets from a gnome panel.',
+        description='Locks/unlocks all panels and applets from a gnome panel. Tested with Gnome 2.30.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     # Maybe the next line is a good solution, but it gave me an exception when I
