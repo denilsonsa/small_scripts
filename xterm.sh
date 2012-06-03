@@ -39,8 +39,8 @@ COMMON=( -rv -ls +sb -sl 1000 +sm -class UXTerm -u8 )
 # The following fonts were extracted from "UXTerm.ad", and supposedly support
 # unicode characters. But maybe I should just start using True Type fonts.
 NORMALSIZE=( -geometry 80x25 -font -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1 )
-#BIGSIZE=(    -geometry 95x37 -font -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1 )
-BIGSIZE=(    -geometry 110x62 -fa 'Monospace' -fs 11 )
+BIGSIZE=(    -geometry 95x36 -font -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1 )
+#BIGSIZE=(    -geometry 110x62 -fa 'Monospace' -fs 11 )
 
 # Good for presentations:
 # "Monospace" and "Bitstream Vera Sans Mono" are the same.
