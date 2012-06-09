@@ -28,6 +28,7 @@ SERVICES=(
     'net.eth0'
     'net.eth1'
     'net.ppp0'
+    'net.ppp1'
     'net.wlan0'
     'ntp-client'
     'ntpd'
@@ -88,6 +89,7 @@ function wizard_show_ip() {
     echo
     select CHOICE in \
         'Exibir o IP da interface ppp0' \
+        'Exibir o IP da interface ppp1' \
         'Exibir todas as interfaces' \
         'Voltar' ; do
         if [ -n "$CHOICE" ] ; then
@@ -95,10 +97,13 @@ function wizard_show_ip() {
                 1)  show_ip ppp0
                     break
                     ;;
-                2)  show_ip
+                2)  show_ip ppp1
                     break
                     ;;
-                3)  return
+                3)  show_ip
+                    break
+                    ;;
+                4)  return
                     ;;
             esac
         fi
