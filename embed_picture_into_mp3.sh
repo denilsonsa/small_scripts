@@ -43,7 +43,8 @@ fi
 # Auto-detect type.
 # http://stackoverflow.com/questions/2264428/converting-string-to-lower-case-in-bash-shell-scripting
 AUTO_TYPE="OTHER"
-case "${PICTURE,,}" in
+PICTURE_NAME="$( basename "${PICTURE}" )"
+case "${PICTURE_NAME,,}" in
 	albumart* | cover* | front* )
 		AUTO_TYPE="FRONT_COVER"
 		;;
