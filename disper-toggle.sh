@@ -1,4 +1,6 @@
 #!/bin/bash
+# A wrapper around "disper" tool.
+# http://willem.engen.nl/projects/disper/
 
 STATE_FILE="$HOME"/.disper-toggle.state
 #STATE_FILE=/var/run/disper-toggle.state
