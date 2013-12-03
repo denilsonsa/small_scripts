@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   >
+  <path
+     sodipodi:type="arc"
+     sodipodi:start="2.0943951"
+     sodipodi:end="4.1887902"
+     sodipodi:cx="64"
+     sodipodi:cy="64"
+     sodipodi:rx="32"
+     sodipodi:ry="32"
+     id="pie-blue"
+     style="fill:#0080ff;stroke:none"
+     d="M 48,91.712813 A 32,32 0 0 1 48,36.287187 L 64,64 z"
+	 />
+  <path
+     sodipodi:type="arc"
+     sodipodi:start="4.1887902"
+     sodipodi:end="6.2831853"
+     sodipodi:cx="64"
+     sodipodi:cy="64"
+     sodipodi:rx="32"
+     sodipodi:ry="32"
+     id="pie-pink"
+     style="fill:#ff0080;stroke:none"
+     d="M 48,36.287187 A 32,32 0 0 1 96,64 l -32,0 z"
+	 />
+  <path
+     sodipodi:type="arc"
+     sodipodi:start="0"
+     sodipodi:end="2.0943951"
+     sodipodi:cx="64"
+     sodipodi:cy="64"
+     sodipodi:rx="32"
+     sodipodi:ry="32"
+     id="pie-yellow"
+     style="fill:#ffff00;stroke:none"
+     d="M 96,64 A 32,32 0 0 1 48,91.712813 L 64,64 z"
+	 />
+  <image
+     x="80"
+     y="56"
+     width="16"
+     height="16"
+     id="smiley-blue"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAGcAAAAAgP/b8+xtAAAA
+AXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAHdElNRQfdDAEBFB7KW680AAAAPElEQVQIW2NkCGVY
+zciYaT+dkXUpwzJGsSkMrxijHHj+M2YZ8DBDCQeG/8gEgz0DRIlY/1YriDawASCjACkFFJnbpc1h
+AAAAAElFTkSuQmCC
+"
+	 />
+  <image
+     x="44"
+     y="76.784607"
+     width="16"
+     height="16"
+     id="smiley-pink"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAGcAAAD/AICeUixmAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAHdElNRQfdDAEBFSwbl8/1AAAAPElEQVQIW2NkCGVYzciYaT+dkXUpwzJGsSkMrxijHHj+M2YZ8DBDCQeG/8gEgz0DRIlY/1YriDawASCjACkFFJnbpc1hAAAAAElFTkSuQmCC"
+	 />
+  <image
+     x="44"
+     y="35.215389"
+     width="16"
+     height="16"
+     id="smiley-yellow"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAAB3RJTUUH3QwBARAkaDuzggAAAAlQ
+		TFRF////AAAA//8AU+1gwgAAAAF0Uk5TAEDm2GYAAAABYktHRACIBR1IAAAAPElEQVQIW2NkCGVY
+		zciYaT+dkXUpwzJGsSkMrxijHHj+M2YZ8DBDCQeG/8gEgz0DRIlY/1YriDawASCjACkFFJnbpc1h
+		AAAAAElFTkSuQmCC
+	 "
+	 />
+  <image
+     x="56"
+     y="56"
+     width="16"
+     height="16"
+     id="smiley-white"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAGcAAAD////NzL25AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAHdElNRQfdDAEBEgRhY/HIAAAAPElEQVQIW2NkCGVYzciYaT+dkXUpwzJGsSkMrxijHHj+M2YZ8DBDCQeG/8gEgz0DRIlY/1YriDawASCjACkFFJnbpc1hAAAAAElFTkSuQmCC"
+	 />
+</svg>
