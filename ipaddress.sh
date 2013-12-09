@@ -87,36 +87,34 @@ else
 
 	if [ "$2" = "-h" ]; then
 		# This section prints MAC address
-		$IFCONFIG $IFACE | sed -n '/HWaddr/{s/.*HWaddr \([0-9A-Fa-f:]\+\).*/\1/;p}'
+		$IFCONFIG $IFACE | sed -n '/HWaddr\|ether /{s/.*\(HWaddr\|ether\) \([0-9A-Fa-f:]\+\).*/\2/;p}'
 	else
 		# This section prints IP or IP/netmask or netsmask
 
-		LINES=`$IFCONFIG $IFACE | fgrep 'inet addr'`
+		#LINES=`$IFCONFIG $IFACE | fgrep 'inet addr'`
+		LINES=`$IFCONFIG $IFACE | fgrep 'inet '`
 		# If no lines were found, quit.
 		if [ $? != 0 ]; then
 			exit 0
 		fi
 
 		if [ "$2" = "-im" -o "$2" = "-m" ]; then
-			LINES=$(echo "$LINES" | sed -n 's/.*inet addr:\([0-9.]\+\).*Mask:\([0-9.]\+\).*/\1\/\2/;p')
+			LINES=$(echo "$LINES" | sed -n 's/.*\(inet addr:\|inet \)\([0-9.]\+\).*\(Mask:\| netmask \)\([0-9.]\+\).*/\2\/\4/;p')
 			# Now LINES contains things like this: 127.0.0.1/255.0.0.0
 		elif [ "$2" = "-in" -o "$2" = "-n" ]; then
 			# DAMN IT... With backticks (`) this doesn't work. With $(), it does!
 			# Within ``, the double backslashes are replaced by single backslashes,
 			# leading to incorrect code being passed to awk.
-			LINES=$(echo "$LINES" | awk '{IP=gensub(/.*inet addr:([0-9.]+).*/,"\\1",""); NETMASK=gensub(/.*Mask:([0-9.]+).*/,"\\1",""); split(NETMASK,V,"."); N=0; for(i=1; i<=4; i++){ while(V[i]) { N+=V[i]%2; V[i]=int(V[i]/2); } }; print IP "/" N }')
+			LINES=$(echo "$LINES" | awk '{IP=gensub(/.*(inet addr:|inet )([0-9.]+).*/,"\\2",""); NETMASK=gensub(/.*(Mask:|netmask )([0-9.]+).*/,"\\2",""); split(NETMASK,V,"."); N=0; for(i=1; i<=4; i++){ while(V[i]) { N+=V[i]%2; V[i]=int(V[i]/2); } }; print IP "/" N }')
 			# Now LINES contains things like this: 127.0.0.1/8
 		fi
 
 		if [ "$2" = "-i" -o "$2" = "" ]; then
-			echo "$LINES" | sed -n 's/.*inet addr:\([0-9.]\+\).*/\1/;p'
+			echo "$LINES" | sed -n 's/.*\(inet addr:\|inet \)\([0-9.]\+\).*/\2/;p'
 		elif [ "$2" = "-im" -o "$2" = "-in" ]; then
 			echo "$LINES"
 		elif [ "$2" = "-m"  -o "$2" = "-n"  ]; then
 			echo "$LINES" | sed -n 's,^.*/,,;p'
 		fi
-
-		#Ancient script version:
-		#/sbin/ifconfig $1 | sed -n '/inet addr/{;s/.*inet addr:\([0-9.]\+\).*/\1/;p;}'
 	fi
 fi
