@@ -107,11 +107,19 @@ def fetch_modem_status(hostname='dsldevice.lan', username='', password=''):
     # Explicit auth is not required, because the library can already read from
     # ~/.netrc.
     auth = (username, password) if username or password else None
-    r = requests.get(
-        url,
-        cookies={'language_flag': '0'},  # To force English language.
-        auth=auth
-    )
+
+    # For some weird reason, the first request always returns 401 Unauthorized.
+    # Retrying will work, and it will continue working for a couple of minutes.
+    for i in range(2):
+        r = requests.get(
+            url,
+            cookies={'language_flag': '0'},  # To force English language.
+            auth=auth
+        )
+        # If it returns 401, let's try once more.
+        if r.status_code != 401:
+            break
+
     r.raise_for_status()
     return r.text
 
