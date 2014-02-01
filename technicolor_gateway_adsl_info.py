@@ -2,9 +2,53 @@
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
+import argparse
 import pyparsing
 import requests
 import sys
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Print ADSL info from Technicolor TG580v2 modem/router',
+        epilog='Note that this script automatically reads authentication'
+        ' credentials from ~/.netrc, so there is no need to pass'
+        ' username/password at the command-line.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        '-t', '--test',
+        action='store_true',
+        dest='run_tests',
+        help='Run the self-test (doctest) of this script'
+    )
+    parser.add_argument(
+        '-H', '--host', '--hostname',
+        action='store',
+        default='dsldevice.lan',
+        type=str,
+        dest='hostname',
+        help='The hostname or IP address for the modem'
+    )
+    parser.add_argument(
+        '-u', '-U', '--user', '--username',
+        action='store',
+        default='',
+        type=str,
+        dest='username',
+        help='Username for HTTP authentication'
+    )
+    parser.add_argument(
+        '-p', '-P', '--pass', '--password',
+        action='store',
+        default='',
+        type=str,
+        dest='password',
+        help='Password for HTTP authentication'
+    )
+    options = parser.parse_args()
+    return options
+
 
 # These pages use an embedded script to load the actual status.
 # http://192.168.1.1/atm_main.htm
@@ -800,19 +844,24 @@ def human_readable_status(status_dict):
 
 
 def main():
-    # TODO: Add command-line arguments for hostname, username, password.
-    # TODO: Add command-line argument to run the doctests.
+    options = parse_args()
+
+    if options.run_tests:
+        run_doctests()
+
     try:
         print(
             human_readable_status(
                 parse_javascript_vars(
-                    fetch_modem_status()
+                    fetch_modem_status(hostname=options.hostname,
+                        username=options.username, password=options.password)
                 )
             )
         )
     except requests.exceptions.HTTPError as e:
         print(e.response.url)
         print(e)
+        sys.exit(1)
 
 def run_doctests():
     import doctest
