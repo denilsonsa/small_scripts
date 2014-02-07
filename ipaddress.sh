@@ -105,7 +105,7 @@ else
 			# DAMN IT... With backticks (`) this doesn't work. With $(), it does!
 			# Within ``, the double backslashes are replaced by single backslashes,
 			# leading to incorrect code being passed to awk.
-			LINES=$(echo "$LINES" | awk '{IP=gensub(/.*(inet addr:|inet )([0-9.]+).*/,"\\2",""); NETMASK=gensub(/.*(Mask:|netmask )([0-9.]+).*/,"\\2",""); split(NETMASK,V,"."); N=0; for(i=1; i<=4; i++){ while(V[i]) { N+=V[i]%2; V[i]=int(V[i]/2); } }; print IP "/" N }')
+			LINES=$(echo "$LINES" | gawk '{IP=gensub(/.*(inet addr:|inet )([0-9.]+).*/,"\\2",""); NETMASK=gensub(/.*(Mask:|netmask )([0-9.]+).*/,"\\2",""); split(NETMASK,V,"."); N=0; for(i=1; i<=4; i++){ while(V[i]) { N+=V[i]%2; V[i]=int(V[i]/2); } }; print IP "/" N }')
 			# Now LINES contains things like this: 127.0.0.1/8
 		fi
 
