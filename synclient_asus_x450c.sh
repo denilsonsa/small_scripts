@@ -38,7 +38,9 @@
 # (II) config/udev: Adding input device ETPS/2 Elantech Touchpad (/dev/input/mouse0)
 # (**) ETPS/2 Elantech Touchpad: Ignoring device from InputClass "touchpad ignore duplicates"
 
-alias xsp='xinput set-prop "ETPS/2 Elantech Touchpad"'
+xsp() {
+	xinput set-prop 'ETPS/2 Elantech Touchpad' "$@"
+}
 
 # These values are extracted from Xorg.0.log.
 # It seems there is no other way to read them.
