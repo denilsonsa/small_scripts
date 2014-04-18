@@ -103,4 +103,12 @@ xsp "Synaptics Gestures" 1
 
 # min, max, accel, <deprecated>
 #xsp "Synaptics Move Speed" 1.00 1.75 0.053763 0
-xsp "Synaptics Move Speed" 1.0 1.50 0.05 0
+#xsp "Synaptics Move Speed" 1.0 1.50 0.05 0
+xsp "Synaptics Move Speed" 1.0 1.0 0.0 0
+
+# http://xorg.freedesktop.org/wiki/Development/Documentation/PointerAcceleration/#accelerationprofileinteger
+xsp 'Device Accel Profile' -1
+xsp 'Device Accel Constant Deceleration' 1.5
+#xsp 'Device Accel Adaptive Deceleration' 1.000000
+#xsp 'Device Accel Velocity Scaling' 12.500000
+
