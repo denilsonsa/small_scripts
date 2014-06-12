@@ -1,7 +1,10 @@
 #!/bin/sh
 
-xsp() {
+xsp_microsoft() {
 	xinput set-prop 'Microsoft  Microsoft Basic Optical Mouse v2.0 ' "$@"
+}
+xsp_logitech() {
+	xinput set-prop 'Logitech USB Laser Mouse' "$@"
 }
 
 # Device Accel Profile (259):	0
@@ -13,7 +16,8 @@ xsp() {
 
 # https://wiki.archlinux.org/index.php/Mouse_acceleration#Disabling_mouse_acceleration
 # http://xorg.freedesktop.org/wiki/Development/Documentation/PointerAcceleration/#accelerationprofileinteger
-xsp 'Device Accel Profile' -1
+xsp_microsoft 'Device Accel Profile' -1
+xsp_logitech 'Device Accel Profile' -1
 
 # Constant mouse speed:
-xsp 'Device Accel Constant Deceleration' 1.5
+xsp_microsoft 'Device Accel Constant Deceleration' 1.5
