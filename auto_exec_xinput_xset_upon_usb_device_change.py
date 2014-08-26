@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 #
 # Based on:
 # http://askubuntu.com/questions/508236/how-can-i-run-code-whenever-a-usb-device-is-unplugged-without-requiring-root/
@@ -14,7 +13,7 @@ import subprocess
 def main():
     BASE_PATH = os.path.abspath(os.path.dirname(__file__))
     path = functools.partial(os.path.join, BASE_PATH)
-    call = lambda x: subprocess.call([path(x)])
+    call = lambda x, *args: subprocess.call([path(x)] + list(args))
 
     context = pyudev.Context()
     monitor = pyudev.Monitor.from_netlink(context)
