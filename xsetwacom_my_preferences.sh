@@ -1,7 +1,19 @@
 #!/bin/bash
 #
-# Want to run this script? Search for "Hard-coded" values and replace them
-# according to your device.
+# CONFIGURATION
+
+# Set this to your (stylus) device. Find it by running:
+# xsetwacom --list devices
+DEVICE='Wacom Graphire4 6x8 stylus'
+
+# These numbers are specific for each device. Get them by running:
+# xsetwacom --set "Your device name here" ResetArea
+# xsetwacom --get "Your device name here" Area
+AREAX=16704
+AREAY=12064
+
+# END OF CONFIGURATION
+
 
 SCREEN="$1"
 
@@ -39,10 +51,6 @@ if [ -z "$WIDTH" -o -z "$HEIGHT" ]; then
 	exit 1
 fi
 
-# Hard-coded values for my device.
-AREAX=16704
-AREAY=12064
-
 # New values respecint aspect ratio:
 RATIOAREAY=$(( AREAX * HEIGHT / WIDTH ))
 RATIOAREAX=$(( AREAY * WIDTH / HEIGHT ))
@@ -55,9 +63,8 @@ else
 	NEWAREAY="$AREAY"
 fi
 
-# Hard-coded tablet name.
-xsetwacom --set 'Wacom Graphire4 6x8 stylus' Area 0 0 "$NEWAREAX" "$NEWAREAY"
-xsetwacom --set 'Wacom Graphire4 6x8 stylus' MapToOutput "$SCREEN"
+xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
+xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
 
 
 # $ xsetwacom --list devices

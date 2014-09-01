@@ -24,11 +24,13 @@ def main():
     call('synclient_asus_x450c.sh')
     call('xinput_disable_mouse_acceleration.sh')
     call('xset_my_preferences.sh')
+    call('xsetwacom_my_preferences.sh', 'desktop')
 
     # Call these again whenever a USB device is plugged or unplugged:
     for device in iter(monitor.poll, None):
         call('xinput_disable_mouse_acceleration.sh')
         call('xset_my_preferences.sh')
+        call('xsetwacom_my_preferences.sh', 'desktop')
 
 
 if __name__ == '__main__':
