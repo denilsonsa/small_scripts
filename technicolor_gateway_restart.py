@@ -91,9 +91,5 @@ def main():
         print(e)
         sys.exit(1)
 
-def run_doctests():
-    import doctest
-    doctest.testmod()
-
 if __name__ == '__main__':
     main()
