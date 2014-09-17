@@ -8,6 +8,7 @@ import functools
 import os.path
 import pyudev
 import subprocess
+import time
 
 
 def main():
@@ -28,6 +29,9 @@ def main():
 
     # Call these again whenever a USB device is plugged or unplugged:
     for device in iter(monitor.poll, None):
+        # Wait a short amount of time to let the device get ready.
+        time.sleep(0.250)
+
         call('xinput_disable_mouse_acceleration.sh')
         call('xset_my_preferences.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')
