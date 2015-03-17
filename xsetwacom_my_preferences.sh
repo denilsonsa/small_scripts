@@ -42,7 +42,7 @@ else
 	# VGA1 disconnected (normal left inverted right x axis y axis)
 	# HDMI1 connected 1920x1080+1366+0 (normal left inverted right x axis y axis) 509mm x 286mm
 
-	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected \([0-9]\+\)x\([0-9]\+\)+.*/\1 \2/p'`
+	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+.*/\2 \3/p'`
 	read WIDTH HEIGHT <<< "$LINE"
 fi
 
