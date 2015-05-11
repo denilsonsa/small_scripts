@@ -12,7 +12,7 @@ import time
 
 
 def main():
-    BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+    BASE_PATH = os.path.dirname(os.path.realpath(os.path.abspath(__file__)))
     path = functools.partial(os.path.join, BASE_PATH)
     call = lambda x, *args: subprocess.call([path(x)] + list(args))
 
