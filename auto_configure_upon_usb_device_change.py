@@ -23,6 +23,9 @@ def main():
 
     # Call them first:
     call('synclient_asus_x450c.sh')
+    call('setxkbmap_my_preferences.sh')
+
+    call('setxkbmap_secondary_keyboard.sh')
     call('xinput_disable_mouse_acceleration.sh')
     call('xset_my_preferences.sh')
     call('xsetwacom_my_preferences.sh', 'desktop')
@@ -32,6 +35,7 @@ def main():
         # Wait a short amount of time to let the device get ready.
         time.sleep(0.250)
 
+        call('setxkbmap_secondary_keyboard.sh')
         call('xinput_disable_mouse_acceleration.sh')
         call('xset_my_preferences.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')

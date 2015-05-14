@@ -12,14 +12,25 @@ echo_run() {
 	"$@"
 }
 
+
 # Finding the id from this line:
 #     ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0      id=14   [slave  keyboard (3)]
 
-KBD_ID=`xinput -list | sed -n 's/^.*Microsoft.*2\.4GHz Transceiver.*id=\([0-9]\+\).*slave \+keyboard.*$/\1/p'`
+KBD_ID=`xinput --list | sed -n 's/^.* Microsoft.*2\.4GHz Transceiver.*id=\([0-9]\+\)[ \t].*slave \+keyboard.*$/\1/p'`
 
 if [ -n "$KBD_ID" ] ; then
-	echo_run setxkbmap -device "$KBD_ID" br abnt2 numpad:microsoft
+	echo_run setxkbmap -device "$KBD_ID" br abnt2 caps:escape compose:menu numpad:microsoft
 fi
+
+# Finding the ids from this line (which, for some reason, shows up twice):
+#     ↳   USB Keyboard                          	id=21	[slave  keyboard (3)]
+#     ↳   USB Keyboard                          	id=22	[slave  keyboard (3)]
+
+xinput --list \
+	| sed -n 's/^.*   USB Keyboard[ \t]\+id=\([0-9]\+\)[ \t].*slave \+keyboard.*$/\1/p' \
+	| while read KBD_ID; do
+	echo_run setxkbmap -device "$KBD_ID" br abnt2 caps:escape compose:menu numpad:microsoft
+done
 
 
 # Configuring xorg.conf to automatically set the keyboard layout for this device:
