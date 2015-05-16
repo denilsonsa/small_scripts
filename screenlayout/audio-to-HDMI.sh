@@ -1,3 +1,3 @@
 #!/bin/sh
-# META:ICON = "audio-card"
+# META:ICON = "hdmi_dark.png"
 pacmd set-card-profile 0 output:hdmi-stereo+input:analog-stereo
