@@ -4,19 +4,25 @@ MYNAME=`basename "$0"`
 
 print_help() {
 	cat << EOF
-Usage: $MYNAME [zopflipng parameters] <filename(s)>
+Usage: $MYNAME [-P <n>] [-k] [zopflipng options] [--] <filename(s)>
 
 This script optimizes one or more PNG images in-place, using zopflipng.
 
 It works by calling zopflipng on each input file, saving the output to a
-temporary file, and then moving the temporary file on top of the original file.
+temporary file, and then writing the temporary file on top of the original file.
+
+  -P <n>    Run in parallel, with <n> being the number of parallel jobs.
+  -k        Shortcut for --keepchunks=pHYs,tIME,bKGD
+  --        Marks the end of options and the start of filenames.
 EOF
 }
 
 parse_arguments() {
+	PARALLEL=0
 	ZARGS=( )
 	ZFILES=( )
 
+	# Options or filenames, until the first filename, or until --.
 	while [[ $# != 0 ]] ; do
 		case "$1" in
 			-h | -help | --help )
@@ -27,6 +33,18 @@ parse_arguments() {
 			-prefix* | --prefix*)
 				echo "${MYNAME}: The --prefix option cannot be used."
 				exit 1
+				;;
+			-y)
+				echo "${MYNAME}: The -y option cannot be used."
+				exit 1
+				;;
+
+			-P)
+				shift
+				PARALLEL="$1"
+				;;
+			-k)
+				ZARGS+=("--keepchunks=pHYs,tIME,bKGD")
 				;;
 
 			-- )
@@ -47,6 +65,7 @@ parse_arguments() {
 		shift
 	done
 
+	# Filenames.
 	while [[ $# != 0 ]] ; do
 		ZFILES+=("$1")
 		shift
@@ -55,6 +74,11 @@ parse_arguments() {
 	# Sanity checks:
 	if [[ "${#ZFILES[@]}" = 0 ]] ; then
 		echo "${MYNAME}: Missing parameters, use --help for instructions."
+		exit 1
+	fi
+
+	if ! [[ "${PARALLEL}" =~ ^[0-9][0-9]*$ ]] ; then
+		echo "${MYNAME}: Invalid -P value: ${PARALLEL}"
 		exit 1
 	fi
 
@@ -80,26 +104,28 @@ parse_arguments "$@"
 
 if ! which zopflipng > /dev/null ; then
 	echo "${MYNAME}: zopflipng executable not found. You can compile and install it from:"
-	echo 'https://github.com/google/zopfli/tree/master/src/zopflipng'
+	echo 'https://github.com/google/zopfli/tree/master/src/zopflipng/'
 	exit 1
 fi
 
+if [ "${PARALLEL}" = 0 ] ; then
+	for f in "${ZFILES[@]}" ; do
+		(
+			TMPFILE="$(mktemp)"
+			trap 'rm -f "${TMPFILE}"' EXIT
 
-# TODO: run zopflipng on each file
-# TODO: allow parallel running using xargs
-
-(
-
-#TMPFILE="$(mktemp zopflipng_in_place.XXXXXXXXXX)"
-TMPFILE="$(mktemp)"
-trap 'rm -f "${TMPFILE}"' EXIT
-
-echo "${TMPFILE}"
-ls -l "${TMPFILE}"
-ls -l /tmp/tmp.*
-
-)
-
-ls -l /tmp/tmp.*
-
-#zopflipng
+			# zopflipng does not exit with a non-zero status if an unknown flag is passed.
+			# For this reason, we check if the temporary file is non-empty.
+			zopflipng -y "${ZARGS[@]}" "${f}" "${TMPFILE}" && [ -s "${TMPFILE}" ] && {
+				# Using cat instead of mv in order to preserve permissions of the original file.
+				cat "${TMPFILE}" > "${f}"
+			}
+		)
+	done
+else
+	# For parallel execution, this script calls itself through xargs.
+	# https://stackoverflow.com/a/21998589/
+	for f in "${ZFILES[@]}" ; do
+		echo "${f}"
+	done | xargs -d '\n' -n 1 -P "${PARALLEL}"    "${0}" "${ZARGS[@]}"
+fi
