@@ -31,7 +31,9 @@
 # -u8 is auto-detected if locale has UTF-8
 #COMMON=( -rv -ls +sb -sl 1000 +sm )
 # Anyway, I'm adding the same options as uxterm wrapper:
-COMMON=( -rv -ls +sb -sl 1000 +sm -class UXTerm -u8 )
+#COMMON=( -rv -ls +sb -sl 1000 +sm -class UXTerm -u8 )
+# Removing -rv because Ubuntu has a black xterm by default.
+COMMON=( -ls +sb -sl 1000 +sm -class UXTerm -u8 )
 
 #NORMALSIZE=( -font 6x13 -geometry 80x25 )
 #BIGSIZE=( -font 10x20 -geometry 95x37+0+0 )

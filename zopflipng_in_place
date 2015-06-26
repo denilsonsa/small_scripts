@@ -1,0 +1,105 @@
+#!/bin/bash
+
+MYNAME=`basename "$0"`
+
+print_help() {
+	cat << EOF
+Usage: $MYNAME [zopflipng parameters] <filename(s)>
+
+This script optimizes one or more PNG images in-place, using zopflipng.
+
+It works by calling zopflipng on each input file, saving the output to a
+temporary file, and then moving the temporary file on top of the original file.
+EOF
+}
+
+parse_arguments() {
+	ZARGS=( )
+	ZFILES=( )
+
+	while [[ $# != 0 ]] ; do
+		case "$1" in
+			-h | -help | --help )
+				print_help
+				exit
+				;;
+
+			-prefix* | --prefix*)
+				echo "${MYNAME}: The --prefix option cannot be used."
+				exit 1
+				;;
+
+			-- )
+				shift
+				break
+				;;
+
+			-* )
+				ZARGS+=("$1")
+				;;
+
+			* )
+				ZFILES+=("$1")
+				shift
+				break
+				;;
+		esac
+		shift
+	done
+
+	while [[ $# != 0 ]] ; do
+		ZFILES+=("$1")
+		shift
+	done
+
+	# Sanity checks:
+	if [[ "${#ZFILES[@]}" = 0 ]] ; then
+		echo "${MYNAME}: Missing parameters, use --help for instructions."
+		exit 1
+	fi
+
+	FILE_ERROR=0
+	for f in "${ZFILES[@]}" ; do
+		if [ ! -f "${f}" ] ; then
+			echo "${MYNAME}: File not found or not a regular file: ${f}"
+			FILE_ERROR=1
+		elif [ ! -r "${f}" ] ; then
+			echo "${MYNAME}: File not readable: ${f}"
+			FILE_ERROR=1
+		fi
+	done
+	if [ "${FILE_ERROR}" = 1 ] ; then
+		exit 1
+	fi
+}
+
+
+# Main code.
+
+parse_arguments "$@"
+
+if ! which zopflipng > /dev/null ; then
+	echo "${MYNAME}: zopflipng executable not found. You can compile and install it from:"
+	echo 'https://github.com/google/zopfli/tree/master/src/zopflipng'
+	exit 1
+fi
+
+
+# TODO: run zopflipng on each file
+# TODO: allow parallel running using xargs
+
+(
+
+#TMPFILE="$(mktemp zopflipng_in_place.XXXXXXXXXX)"
+TMPFILE="$(mktemp)"
+trap 'rm -f "${TMPFILE}"' EXIT
+
+echo "${TMPFILE}"
+ls -l "${TMPFILE}"
+ls -l /tmp/tmp.*
+
+)
+
+ls -l /tmp/tmp.*
+
+#zopflipng
