@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ -z "$1" -o "$1" = "-h" -o "$1" = "-help" -o "$1" = "--help" -o "$#" != 1 ] ; then
+	echo 'Usage:'
+	echo '  mkdirecho some/directory'
+	echo '  mv foo bar "$(mkdir some/directory)"'
+	echo ''
+	echo 'Create a new directory and echo the path.'
+	echo ''
+	echo 'This is the entire source-code of this script:'
+	echo '  echo "$1" && mkdir -p "$1"'
+	echo ''
+	echo 'History:'
+	echo '  Suppose you are writing a long commandline, such as...'
+	echo '    $ mv foo bar ~/some/deep/dir/structure/here'
+	echo '  And then you find out through tab-completion that the directory you want'
+	echo '  to pass as parameter does not exist. What would you do?'
+	echo ''
+	echo '  "mkdirecho" was created due to the need to quickly create a new directory'
+	echo '  and use it in the commandline, without having to type the entire path'
+	echo '  twice and without aborting the current command.'
+	echo ''
+	echo '  The solution is to rewrite that sample commandline like this:'
+	echo '    $ mv foo bar "$(mkdirecho ~/some/deep/dir/structure/here)"'
+	echo ''
+	echo '  Using "foo $(bar)" will execute "bar", capture the stdout and pass it as'
+	echo '  a parameter to "foo", which will then be executed.'
+	echo ''
+	echo '  Thanks to my friend Alexandre Araujo who gave me this idea!'
+	exit 1
+fi
+
+echo "$1" && mkdir -p "$1"
