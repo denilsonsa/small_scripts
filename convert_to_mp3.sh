@@ -136,9 +136,14 @@ EOF
 
 detect_ffmpeg() {
 	FFMPEG=ffmpeg
+	JOINT_STEREO=('-joint_stereo' '1')
+	END_OF_PARAMS=('--')
 	if ! which "${FFMPEG}" &> /dev/null ; then
 		# Ubuntu 14.04 LTS
 		FFMPEG=avconv
+		# Not supported by avconv in Ubuntu 14.04:
+		JOINT_STEREO=()
+		END_OF_PARAMS=()
 	fi
 	if ! which "${FFMPEG}" &> /dev/null ; then
 		die "Cannot find ffmpeg nor avconv. Please install one of them."
@@ -180,8 +185,8 @@ for f in "${FILES[@]}"; do
 		-acodec libmp3lame \
 		-ac "${CHANNELS}" \
 		"${QUALITY_PARAMS[@]}" \
-		-joint_stereo 1 \
-		-- "${output}" \
+		"${JOINT_STEREO[@]}" \
+		"${END_OF_PARAMS[@]}" \
 		&& [ "${AUTO_DELETE}" = 1 ] && rm -f -- "${f}"
 	set +x  # [ "${VERBOSE}" = 1 ]
 done
