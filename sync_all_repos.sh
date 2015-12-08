@@ -51,7 +51,7 @@ for d in */ ; do
 			(
 				set -x
 				cd "$d"
-				hg pull && hg push
+				hg pull -u && hg push
 			)
 		fi
 	fi
