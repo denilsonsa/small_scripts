@@ -15,6 +15,7 @@ Parameters:
   -y, -f, --force      Overwrite files without asking.
   -i, --interactive    Ask before overwriting files. This is the default.
   -v, --verbose        Print additional information, useful for debugging.
+  --delete             Delete original files after conversion. Warning: no confirmation is asked!
 
 Encoding parameters:
   --cbr                Use CBR (Constant Bit Rate). This is the default.
@@ -48,6 +49,7 @@ parse_arguments() {
 
 	CHANNELS=2
 	COVER=( )
+	AUTO_DELETE=0
 	FFMPEG=''
 	FILES=( )
 	OVERWRITE=( )
@@ -77,6 +79,7 @@ parse_arguments() {
 			-y | -f | --force  ) OVERWRITE=('-y') ;;
 			-i | --interactive ) OVERWRITE=() ;;
 			-v | --verbose ) VERBOSE=1 ;;
+			--delete ) AUTO_DELETE=1 ;;
 			-- )
 				shift
 				break
@@ -172,12 +175,13 @@ for f in "${FILES[@]}"; do
 	"${FFMPEG}" \
 		-v warning \
 		"${OVERWRITE[@]}" \
-		-i "$f" \
+		-i "${f}" \
 		"${COVER[@]}" \
 		-acodec libmp3lame \
 		-ac "${CHANNELS}" \
 		"${QUALITY_PARAMS[@]}" \
 		-joint_stereo 1 \
-		-- "${output}"
+		-- "${output}" \
+		&& [ "${AUTO_DELETE}" = 1 ] && rm -f -- "${f}"
 	set +x  # [ "${VERBOSE}" = 1 ]
 done
