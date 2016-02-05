@@ -187,6 +187,7 @@ for f in "${FILES[@]}"; do
 		"${QUALITY_PARAMS[@]}" \
 		"${JOINT_STEREO[@]}" \
 		"${END_OF_PARAMS[@]}" \
+		"${output}" \
 		&& [ "${AUTO_DELETE}" = 1 ] && rm -f -- "${f}"
 	set +x  # [ "${VERBOSE}" = 1 ]
 done
