@@ -41,12 +41,16 @@ def main():
         'usb': usb_hotplug_callback,
         'drm': drm_hotplug_callback,
     }
+    timeouts = {
+        'usb': 0.5,
+        'drm': 1,
+    }
 
 
     def udev_event_received(device):
         if device.subsystem in callbacks:
             reset_timer(device.subsystem)
-            t = Timer(0.5, callbacks[device.subsystem])
+            t = Timer(timeouts[device.subsystem], callbacks[device.subsystem])
             timers[device.subsystem] = t
             t.start()
 
