@@ -1,10 +1,15 @@
 #!/bin/sh
 
+echo_run() {
+	echo "$@"
+	"$@"
+}
+
 xsp_microsoft() {
-	xinput set-prop 'Microsoft  Microsoft Basic Optical Mouse v2.0 ' "$@"
+	echo_run xinput set-prop 'Microsoft  Microsoft Basic Optical Mouse v2.0 ' "$@"
 }
 xsp_logitech() {
-	xinput set-prop 'Logitech USB Laser Mouse' "$@"
+	echo_run xinput set-prop 'Logitech USB Laser Mouse' "$@"
 }
 
 # Device Accel Profile (259):	0

@@ -4,7 +4,7 @@
 
 # Set this to your (stylus) device. Find it by running:
 # xsetwacom --list devices
-DEVICE='Wacom Graphire4 6x8 stylus'
+DEVICE='Wacom Graphire4 6x8 Pen stylus'
 
 # These numbers are specific for each device. Get them by running:
 # xsetwacom --set "Your device name here" ResetArea
@@ -14,6 +14,11 @@ AREAY=12064
 
 # END OF CONFIGURATION
 
+
+echo_run() {
+	echo "$@"
+	"$@"
+}
 
 SCREEN="$1"
 
@@ -63,8 +68,8 @@ else
 	NEWAREAY="$AREAY"
 fi
 
-xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
-xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
+echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
+echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
 
 
 # $ xsetwacom --list devices
