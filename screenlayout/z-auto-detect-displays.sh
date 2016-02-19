@@ -87,6 +87,7 @@ xrandr --prop \
 nl=$'\n'
 laptop='4CA34936000000000015'
 aoc2351='05E35123B00500002317'
+asusM51Sn='0ED403001E2000003312'
 
 case "${status}" in
 	"LVDS1 ${laptop}")
@@ -94,6 +95,9 @@ case "${status}" in
 		;;
 	"LVDS1 ${laptop}${nl}HDMI1 ${aoc2351}")
 		~/.screenlayout/video-1080p-at-right.sh
+		;;
+	"LVDS1 ${laptop}${nl}HDMI1 ${asusM51Sn}")
+		~/.screenlayout/video-asusM51Sn-at-right.sh
 		;;
 	*)
 		echo 'Unknown configuration:'
