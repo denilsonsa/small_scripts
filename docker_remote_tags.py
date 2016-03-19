@@ -164,6 +164,8 @@ def main():
     options = parse_arguments()
 
     for image in options.imagename:
+        if len(options.imagename) > 1:
+            print('Tags for {0}:'.format(image))
         get_tags_for_image(image)
 
 
