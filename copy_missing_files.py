@@ -261,11 +261,11 @@ def main():
         missing_files = source_files - dest_files
 
         # DEBUG:
-        #print("source_dir: {}\n{}\ndest_dir: {}\n{}".format(source_dir, source_files, dest_dir, dest_files))
+        # print("source_dir: {}\n{}\ndest_dir: {}\n{}".format(source_dir, source_files, dest_dir, dest_files))
 
         # Printing overall quantities
-        print("Source files: {0}; Destination files: {1}; Missing files: {2}"
-            .format(
+        print(
+            "Source files: {0}; Destination files: {1}; Missing files: {2}".format(
                 len(source_files),
                 len(dest_files),
                 len(missing_files)

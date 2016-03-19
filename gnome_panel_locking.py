@@ -16,7 +16,7 @@ def parse_arguments():
     )
     # Maybe the next line is a good solution, but it gave me an exception when I
     # tried to use it. Maybe I had an outdated argparse version.
-    #parser.add_mutually_exclusive_group(required=True)
+    # parser.add_mutually_exclusive_group(required=True)
     parser.add_argument(
         '-l', '--lock',
         action='store_true',
@@ -38,8 +38,9 @@ def parse_arguments():
 
     return args
 
+
 def main():
-    options = parse_arguments();
+    options = parse_arguments()
 
     # Value to be written
     if options.lock:
@@ -56,6 +57,7 @@ def main():
         client.set_bool(path + '/locked', locked_boolean)
     for path in client.all_dirs('/apps/panel/objects'):
         client.set_bool(path + '/locked', locked_boolean)
+
 
 if __name__ == "__main__":
     main()

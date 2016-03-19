@@ -32,23 +32,24 @@ import dialog
 
 
 # Sample 'xinput -list' output:
-#⎡ Virtual core pointer                    	id=2	[master pointer  (3)]
-#⎜   ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
-#⎜   ↳ Microsoft  Microsoft Basic Optical Mouse v2.0 	id=10	[slave  pointer  (2)]
-#⎜   ↳ SynPS/2 Synaptics TouchPad              	id=13	[slave  pointer  (2)]
-#⎜   ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=14	[slave  pointer  (2)]
-#⎜   ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=15	[slave  pointer  (2)]
-#⎣ Virtual core keyboard                   	id=3	[master keyboard (2)]
-#    ↳ Virtual core XTEST keyboard             	id=5	[slave  keyboard (3)]
-#    ↳ Power Button                            	id=6	[slave  keyboard (3)]
-#    ↳ Video Bus                               	id=7	[slave  keyboard (3)]
-#    ↳ Sleep Button                            	id=8	[slave  keyboard (3)]
-#    ↳ USB2.0 1.3M UVC WebCam                  	id=9	[slave  keyboard (3)]
-#    ↳ Asus Laptop extra buttons               	id=11	[slave  keyboard (3)]
-#    ↳ AT Translated Set 2 keyboard            	id=12	[slave  keyboard (3)]
-#    ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=16	[slave  keyboard (3)]
+# ⎡ Virtual core pointer                    	id=2	[master pointer  (3)]
+# ⎜   ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
+# ⎜   ↳ Microsoft  Microsoft Basic Optical Mouse v2.0 	id=10	[slave  pointer  (2)]
+# ⎜   ↳ SynPS/2 Synaptics TouchPad              	id=13	[slave  pointer  (2)]
+# ⎜   ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=14	[slave  pointer  (2)]
+# ⎜   ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=15	[slave  pointer  (2)]
+# ⎣ Virtual core keyboard                   	id=3	[master keyboard (2)]
+#     ↳ Virtual core XTEST keyboard             	id=5	[slave  keyboard (3)]
+#     ↳ Power Button                            	id=6	[slave  keyboard (3)]
+#     ↳ Video Bus                               	id=7	[slave  keyboard (3)]
+#     ↳ Sleep Button                            	id=8	[slave  keyboard (3)]
+#     ↳ USB2.0 1.3M UVC WebCam                  	id=9	[slave  keyboard (3)]
+#     ↳ Asus Laptop extra buttons               	id=11	[slave  keyboard (3)]
+#     ↳ AT Translated Set 2 keyboard            	id=12	[slave  keyboard (3)]
+#     ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=16	[slave  keyboard (3)]
 
-RE_XINPUT_LIST = re.compile(ur'''
+RE_XINPUT_LIST = re.compile(
+    ur'''
     ^
     [\u239b-\u23bf]?  # Ignoring the leading "box" char
     \s*
@@ -64,7 +65,8 @@ RE_XINPUT_LIST = re.compile(ur'''
     re.VERBOSE
 )
 
-RE_XINPUT_DEVICE_TYPE = re.compile(r'''
+RE_XINPUT_DEVICE_TYPE = re.compile(
+    r'''
     ^ \s* \[? \s*
     (?P<typename>[a-zA-Z ]+?)
     \s*
@@ -327,7 +329,7 @@ class Program(object):
             # This one is now default, no need to explicitly set it.
             # https://bugs.freedesktop.org/show_bug.cgi?id=19500
             # http://cgit.freedesktop.org/xkeyboard-config/commit/symbols/altwin?id=5de02aa07a8d4bbe1957af3a38212c3507f2436f
-            #('altwin:super_win',        '', 1),
+            # ('altwin:super_win',        '', 1),
 
             ('>> Compose key',          'Compose key position', 0),
             ('compose:ralt',            'Right Alt', 0),
@@ -410,8 +412,8 @@ class Program(object):
         # Final confirmation
         cmdstring = args_to_cmdstring(setxkbmap_cmdline)
         confirm = self.confirm_run_command(cmdstring)
-        #if confirm is None:
-        #    return
+        # if confirm is None:
+        #     return
         if confirm:
             echo_run(setxkbmap_cmdline)
 

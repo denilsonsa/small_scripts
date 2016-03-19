@@ -80,8 +80,11 @@ def main():
             sys.exit(1)
 
     try:
-        reconnect_wan(hostname=options.hostname,
-            username=options.username, password=options.password)
+        reconnect_wan(
+            hostname=options.hostname,
+            username=options.username,
+            password=options.password
+        )
     except requests.exceptions.HTTPError as e:
         print(e.response.url)
         print(e)

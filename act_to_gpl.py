@@ -26,7 +26,7 @@ def parse_adobe_act(filename):
             nbcolors = filesize // 3
 
         # List of (R, G, B) tuples.
-        return [struct.unpack('3B',file.read(3)) for i in range(nbcolors)]
+        return [struct.unpack('3B', file.read(3)) for i in range(nbcolors)]
 
 
 def return_gimp_palette(colors, name, columns=0):

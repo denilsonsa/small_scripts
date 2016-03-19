@@ -16,7 +16,7 @@ import time
 
 available_parameters = [
     ("h", "help", "Print help"),
-    ("i:","interval=", "Defines the polling interval, in seconds (default=1.0)"),
+    ("i:", "interval=", "Defines the polling interval, in seconds (default=1.0)"),
 ]
 
 
@@ -34,7 +34,7 @@ def print_help():
     print "Sleeps until 'filename' has been modified."
     print ""
     print "Options:"
-    long_length = 2 + max(len(long) for x,long,y in available_parameters)
+    long_length = 2 + max(len(long) for x, long, y in available_parameters)
     for short, long, desc in available_parameters:
         if short and long:
             comma = ", "
@@ -49,7 +49,7 @@ def print_help():
         if long:
             long = "--" + long
 
-        print "  {0}{1}{2:{3}}  {4}".format(short,comma,long,long_length, desc)
+        print "  {0}{1}{2:{3}}  {4}".format(short, comma, long, long_length, desc)
 
     print ""
     print "Currently, it is implemented using polling. In future, support for pyinotify might be added."
@@ -65,15 +65,15 @@ def parse_options(argv, opt):
     try:
         opts, args = getopt.getopt(
             argv,
-            "".join(short for short,x,y in available_parameters),
-            [long for x,long,y in available_parameters]
+            "".join(short for short, x, y in available_parameters),
+            [long for x, long, y in available_parameters]
         )
     except getopt.GetoptError as e:
         print str(e)
         print "Use --help for usage instructions."
         sys.exit(2)
 
-    for o,v in opts:
+    for o, v in opts:
         if o in ("-h", "--help"):
             print_help()
             sys.exit(0)

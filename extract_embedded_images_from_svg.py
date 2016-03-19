@@ -58,7 +58,7 @@ def parse_arguments():
 # In Python 3.2, this piece of code can be replaced by a single line.
 def mkdir_p(path):
     # For Python 3.2 or later:
-    #os.makedirs(path, exist_ok=True)
+    # os.makedirs(path, exist_ok=True)
 
     # For Python 2:
     try:
@@ -86,11 +86,11 @@ def decode_data_url(url):
 
     mediatype, data = data.split(',', 1)
 
-    # even base64 encoded data URLs might be quoted so unquote in any case:
-    #data = urllib.parse.unquote_to_bytes(data)  # For Python 3
+    # Even base64 encoded data URLs might be quoted so unquote in any case:
+    # data = urllib.parse.unquote_to_bytes(data)  # For Python 3
     data = urllib.unquote(data)  # For Python 2.7
     if mediatype.endswith(';base64'):
-        #data = base64.decodebytes(data)  # For Python 3
+        # data = base64.decodebytes(data)  # For Python 3
         data = base64.decodestring(data)  # For Python 2.7
         mediatype = mediatype[:-7]
 
@@ -142,7 +142,7 @@ def extract_from_svg(svgfile, prefix):
     for (event, elem) in xml.etree.ElementTree.iterparse(svgfile, ['start']):
         tag = stripNS(elem.tag)
         if tag == 'image':
-            attrs = {stripNS(k): v for k,v in elem.attrib.items()}
+            attrs = {stripNS(k): v for k, v in elem.attrib.items()}
             if 'href' in attrs:
                 url = attrs['href']
                 if url.startswith('data:'):
@@ -160,8 +160,8 @@ def extract_from_svg(svgfile, prefix):
 
 
 def main():
-    options = parse_arguments();
-    if options.prefix == None:
+    options = parse_arguments()
+    if options.prefix is None:
         options.prefix = options.svgfile.name if options.svgfile.name != '<stdin>' else 'stdin'
 
     extract_from_svg(options.svgfile, options.prefix)

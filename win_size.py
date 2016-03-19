@@ -30,12 +30,14 @@ def set_size(width, height):
 
     pygame.display.flip()
 
+
 def change_size(delta_width, delta_height):
-    #pygame.display.get_surface().get_size()
+    # pygame.display.get_surface().get_size()
     info = pygame.display.Info()
     w = info.current_w + delta_width
     h = info.current_h + delta_height
     set_size(w, h)
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -61,6 +63,7 @@ def parse_arguments():
     )
     args = parser.parse_args()
     return args
+
 
 def main():
     options = parse_arguments()
@@ -91,7 +94,7 @@ def main():
         elif event.type == KEYDOWN:
             if event.key in [K_ESCAPE, K_q]:
                 break
-            elif key_and_offsets.has_key(event.key):
+            elif event.key in key_and_offsets:
                 delta_width, delta_height = key_and_offsets.get(event.key)
                 change_size(delta_width, delta_height)
 
@@ -100,6 +103,7 @@ def main():
             set_size(w, h)
 
     pygame.quit()
+
 
 if __name__ == '__main__':
     main()

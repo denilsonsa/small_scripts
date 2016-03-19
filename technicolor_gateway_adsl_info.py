@@ -803,9 +803,11 @@ def human_readable_status(status_dict):
     ADSLMode_ext = status_dict['ADSLMode_ext']
 
     # Messages for adsl_status[0].
-    ADSLStatusCurrent_Msg=['Reset', 'Ready', 'Fail', 'Idle', 'Quiet', 'GHS',
+    ADSLStatusCurrent_Msg = [
+        'Reset', 'Ready', 'Fail', 'Idle', 'Quiet', 'GHS',
         'Full Initialization', 'Show Time', 'Re-Train', 'Diagnostic Mode',
-        'Short Initialization']
+        'Short Initialization'
+    ]
 
     lines = []
 
@@ -853,8 +855,11 @@ def main():
         print(
             human_readable_status(
                 parse_javascript_vars(
-                    fetch_modem_status(hostname=options.hostname,
-                        username=options.username, password=options.password)
+                    fetch_modem_status(
+                        hostname=options.hostname,
+                        username=options.username,
+                        password=options.password
+                    )
                 )
             )
         )
@@ -863,9 +868,11 @@ def main():
         print(e)
         sys.exit(1)
 
+
 def run_doctests():
     import doctest
     doctest.testmod()
+
 
 if __name__ == '__main__':
     main()

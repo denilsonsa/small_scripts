@@ -84,16 +84,16 @@ def main():
         json.dump(parsed, f, indent='\t')
 
     fields = [
-		'appid',
-		'title',
-		'developer',
-		'rating',
-		'description',
-		'page',
-		'developer-page',
-		'img-local',
-		'img-small',
-		'img-large',
+        'appid',
+        'title',
+        'developer',
+        'rating',
+        'description',
+        'page',
+        'developer-page',
+        'img-local',
+        'img-small',
+        'img-large',
     ]
     csvfilename = os.path.splitext(inputfile)[0] + '.csv'
     with open(csvfilename, 'w', newline='') as f:

@@ -15,7 +15,7 @@ import sys
 
 
 # Old, deprecated /proc/acpi path
-#HARDCODED_PROC_PATH = "/proc/acpi/video/VGA/LCDD/brightness"
+# HARDCODED_PROC_PATH = "/proc/acpi/video/VGA/LCDD/brightness"
 
 # New, /sys path
 HARDCODED_SYS_PATH = "/sys/class/backlight/acpi_video0/"
@@ -74,10 +74,10 @@ def main():
         index = levels.index(current)
         new_index = index + value
 
-        #if new_index < 0:
-        #    new_index = 0
-        #if new_index >= len(levels):
-        #    new_index = len(levels) - 1
+        # if new_index < 0:
+        #     new_index = 0
+        # if new_index >= len(levels):
+        #     new_index = len(levels) - 1
         new_index = max(0, min(new_index, len(levels)-1))
 
         new_value = levels[new_index]
@@ -96,14 +96,14 @@ def main():
     # Optional xosd support
     # It works, but I didn't like it. Feel free to uncomment if you want.
     #
-    #try:
-    #    xosd_args = "osd_cat -A center -p bottom -o 32 -c green -O 1 -u black -b percentage -P".split()
-    #    percentage = 100 * new_index / (len(levels)-1)
-    #    xosd_args.append(str(int(round(percentage))))
-    #    subprocess.call(["killall", "osd_cat"])
-    #    subprocess.Popen( xosd_args )
-    #except:
-    #    pass
+    # try:
+    #     xosd_args = "osd_cat -A center -p bottom -o 32 -c green -O 1 -u black -b percentage -P".split()
+    #     percentage = 100 * new_index / (len(levels)-1)
+    #     xosd_args.append(str(int(round(percentage))))
+    #     subprocess.call(["killall", "osd_cat"])
+    #     subprocess.Popen( xosd_args )
+    # except:
+    #     pass
 
 
 if __name__ == "__main__":

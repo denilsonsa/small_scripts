@@ -20,7 +20,9 @@ __home_page__ = "http://li2z.cn/"
 import os
 import posixpath
 import http.server
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import cgi
 import shutil
 import mimetypes
@@ -93,7 +95,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         remainbytes = int(self.headers['content-length'])
         line = self.rfile.readline()
         remainbytes -= len(line)
-        if not boundary in line:
+        if boundary not in line:
             return (False, "Content NOT begin with boundary")
         line = self.rfile.readline()
         remainbytes -= len(line)
@@ -226,8 +228,8 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         """
         # abandon query parameters
-        path = path.split('?',1)[0]
-        path = path.split('#',1)[0]
+        path = path.split('?', 1)[0]
+        path = path.split('#', 1)[0]
         path = posixpath.normpath(urllib.parse.unquote(path))
         words = path.split('/')
         words = [_f for _f in words if _f]
@@ -235,7 +237,8 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         for word in words:
             drive, word = os.path.splitdrive(word)
             head, word = os.path.split(word)
-            if word in (os.curdir, os.pardir): continue
+            if word in (os.curdir, os.pardir):
+                continue
             path = os.path.join(path, word)
         return path
 
@@ -280,18 +283,18 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             return self.extensions_map['']
 
     if not mimetypes.inited:
-        mimetypes.init() # try to read system mime.types
+        mimetypes.init()  # try to read system mime.types
     extensions_map = mimetypes.types_map.copy()
     extensions_map.update({
-        '': 'application/octet-stream', # Default
+        '': 'application/octet-stream',  # Default
         '.py': 'text/plain',
         '.c': 'text/plain',
         '.h': 'text/plain',
         })
 
 
-def test(HandlerClass = SimpleHTTPRequestHandler,
-         ServerClass = http.server.HTTPServer):
+def test(HandlerClass=SimpleHTTPRequestHandler,
+         ServerClass=http.server.HTTPServer):
     http.server.test(HandlerClass, ServerClass)
 
 if __name__ == '__main__':

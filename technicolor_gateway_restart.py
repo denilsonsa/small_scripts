@@ -84,8 +84,11 @@ def main():
             sys.exit(1)
 
     try:
-        restart_modem(hostname=options.hostname,
-            username=options.username, password=options.password)
+        restart_modem(
+            hostname=options.hostname,
+            username=options.username,
+            password=options.password
+        )
     except requests.exceptions.HTTPError as e:
         print(e.response.url)
         print(e)
