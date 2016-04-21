@@ -12,7 +12,9 @@ It works by calling zopflipng on each input file, saving the output to a
 temporary file, and then writing the temporary file on top of the original file.
 
   -P <n>    Run in parallel, with <n> being the number of parallel jobs.
-  -k        Shortcut for --keepchunks=pHYs,tIME,bKGD
+  -k        Shortcut for --keepchunks=pHYs
+  -kk       Shortcut for --keepchunks=pHYs,tIME
+  -kkk      Shortcut for --keepchunks=pHYs,tIME,bKGD
   --        Marks the end of options and the start of filenames.
 EOF
 }
@@ -44,6 +46,12 @@ parse_arguments() {
 				PARALLEL="$1"
 				;;
 			-k)
+				ZARGS+=("--keepchunks=pHYs")
+				;;
+			-kk)
+				ZARGS+=("--keepchunks=pHYs,tIME")
+				;;
+			-kk)
 				ZARGS+=("--keepchunks=pHYs,tIME,bKGD")
 				;;
 
