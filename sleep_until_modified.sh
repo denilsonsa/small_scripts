@@ -14,7 +14,10 @@ EOF
 }
 
 # check dependencies
-type inotifywait >/dev/null 2>&1 || echo "You are missing the inotifywait dependency.  Install the package inotify-tools (apt-get install inotify-tools)"; exit
+if ! type inotifywait &>/dev/null ; then
+	echo "You are missing the inotifywait dependency. Install the package inotify-tools (apt-get install inotify-tools)"
+	exit 1
+fi
 
 # parse_parameters:
 while [[ "$1" == -* ]] ; do
