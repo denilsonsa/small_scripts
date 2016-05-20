@@ -51,7 +51,7 @@ parse_arguments() {
 			-kk)
 				ZARGS+=("--keepchunks=pHYs,tIME")
 				;;
-			-kk)
+			-kkk)
 				ZARGS+=("--keepchunks=pHYs,tIME,bKGD")
 				;;
 
