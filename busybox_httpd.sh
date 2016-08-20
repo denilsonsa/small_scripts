@@ -17,9 +17,9 @@ else
 	EXTRAS=""
 fi
 
-echo_run() {
+echo_exec() {
 	echo "$@"
-	"$@"
+	exec "$@"
 }
 
-echo_run busybox httpd -f ${EXTRAS} "$@"
+echo_exec busybox httpd -f ${EXTRAS} "$@"
