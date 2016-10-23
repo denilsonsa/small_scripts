@@ -14,5 +14,5 @@ add_modeline() {
 	xrandr --addmode "$1" "${name}"
 }
 
-add_modeline VIRTUAL1 1920 1080 60
-add_modeline VIRTUAL1 1920 1000 60
+add_modeline VIRTUAL-1 1920 1080 60
+add_modeline VIRTUAL-1 1920 1000 60
