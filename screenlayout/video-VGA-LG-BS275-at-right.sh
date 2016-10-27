@@ -3,4 +3,3 @@ xrandr --dpi 96x96 --output HDMI-1 --off --output LVDS-1 --primary --mode 1366x7
 ~/myrepos/small_scripts/wallpaper_restore.sh
 ~/.screenlayout/audio-to-laptop.sh
 ~/myrepos/small_scripts/skippy-xd-restart.sh
-~/myrepos/small_scripts/skippy-xd-restart.sh

@@ -19,4 +19,3 @@ xrandr --dpi 96x96 --output HDMI-1 --mode 1280x800_60 --pos 1366x0 --rotate left
 ~/myrepos/small_scripts/wallpaper_restore.sh
 ~/.screenlayout/wacom-desktop.sh
 ~/myrepos/small_scripts/skippy-xd-restart.sh
-~/myrepos/small_scripts/skippy-xd-restart.sh

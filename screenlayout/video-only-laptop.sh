@@ -5,6 +5,5 @@ xrandr --dpi 96x96 --output HDMI-1 --off --output LVDS-1 --mode 1366x768 --pos 0
 ~/.screenlayout/audio-to-laptop.sh
 ~/.screenlayout/wacom-desktop.sh
 ~/myrepos/small_scripts/skippy-xd-restart.sh
-~/myrepos/small_scripts/skippy-xd-restart.sh
 
 # --dpi 96x96 because: https://www.reddit.com/r/chrome/comments/36u42i/psa_set_dpi_to_96x96_to_fix_several_chrome_43/
