@@ -86,7 +86,8 @@ xrandr --prop \
 
 nl=$'\n'
 laptop='4CA34936000000000015'
-aoc2351='05E35123B00500002317'
+aoc2351a='05E35123B00500002317'
+aoc2351b='05E3752401010101171A'
 asusM51Sn='0ED403001E2000003312'
 philips='410C0100010101010110'
 
@@ -94,7 +95,8 @@ case "${status}" in
 	"LVDS-1 ${laptop}")
 		~/.screenlayout/video-only-laptop.sh
 		;;
-	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351}")
+	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351a}") ;&
+	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351b}")
 		~/.screenlayout/video-1080p-at-right.sh
 		;;
 	"LVDS-1 ${laptop}${nl}HDMI-1 ${asusM51Sn}")
