@@ -64,6 +64,7 @@ def main():
     def usb_hotplug_callback():
         call('setxkbmap_secondary_keyboard.sh')
         call('xinput_disable_mouse_acceleration.sh')
+        call('xmodmap_corsair_mouse_buttons.sh')
         call('xset_my_preferences.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')
 
