@@ -1,3 +1,3 @@
 #!/bin/sh
 # META:ICON = "keyboard"
-setxkbmap us altgr-intl caps:escape compose:menu numpad:microsoft
+setxkbmap us altgr-intl caps:backspace compose:menu numpad:microsoft
