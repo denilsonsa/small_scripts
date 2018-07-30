@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
@@ -49,7 +49,7 @@ import dialog
 #     ↳ Microsoft Microsoft® 2.4GHz Transceiver v8.0	id=16	[slave  keyboard (3)]
 
 RE_XINPUT_LIST = re.compile(
-    ur'''
+    r'''
     ^
     [\u239b-\u23bf]?  # Ignoring the leading "box" char
     \s*
@@ -118,7 +118,7 @@ def echo_run(args):
     subprocess.call(args)
 
 
-class XInputDeviceType(object):
+class XInputDeviceType:
     def __init__(self, typestring):
         # Default values
         self.is_slave = False
@@ -149,7 +149,7 @@ class XInputDeviceType(object):
         )
 
 
-class XInputDevice(object):
+class XInputDevice:
     def __init__(self, name, id, typestring):
         self.name = name   # XIDeviceInfo->name
         self.id = int(id)  # XIDeviceInfo->deviceid
@@ -202,13 +202,13 @@ class Program(object):
             ('Change settings', ''),
         ]
 
-        (returncode, tag) = self.d.menu(
+        (code, tag) = self.d.menu(
             'Select an action',
             title='setxkbmap',
             choices=choices,
             height=0, width=0, menu_height=0
         )
-        if returncode == 0:
+        if code == self.d.OK:
             # -verbose 10
             if tag == '-query':
                 echo_run(['setxkbmap', '-query'])
@@ -234,13 +234,13 @@ class Program(object):
         ]
         choices.insert(0, ('all', '-all-'))
 
-        (returncode, tag) = self.d.menu(
+        (code, tag) = self.d.menu(
             'Select a keyboard:',
             title='X Input keyboards',
             choices=choices,
             height=0, width=0, menu_height=0
         )
-        if returncode == 0:
+        if code == self.d.OK:
             if tag == 'all':
                 return tag
             else:
@@ -272,13 +272,13 @@ class Program(object):
             ('us_unicode',         'English (US, international AltGr Unicode combining)'),
         ]
 
-        (returncode, tag) = self.d.menu(
+        (code, tag) = self.d.menu(
             'Select a keyboard layout+variant:',
             title='Keyboard layouts and variants',
             choices=choices,
             height=0, width=0, menu_height=0
         )
-        if returncode == 0:
+        if code == self.d.OK:
             tmp = tag.partition('_')
             return (tmp[0], tmp[2])
         else:
@@ -345,13 +345,13 @@ class Program(object):
             ('compose:sclk',            'Scroll Lock', 0),
         ]
 
-        (returncode, tags) = self.d.checklist(
+        (code, tags) = self.d.checklist(
             'Select the desired options:',
             title='Keyboard options',
             choices=choices,
             height=0, width=0, list_height=0
         )
-        if returncode == 0:
+        if code == self.d.OK:
             tags = [tag for tag in tags if not tag.startswith('>>')]
             if tags[0] == 'CLEAR':
                 tags[0] = ''
@@ -360,7 +360,7 @@ class Program(object):
             return None
 
     def confirm_run_command(self, command):
-        returncode = self.d.yesno(
+        code = self.d.yesno(
             'About to run the following command:\n'
             '\n'
             '{0}'
@@ -370,9 +370,9 @@ class Program(object):
             title='Confirm command',
             height=0, width=0
         )
-        if returncode == 0:
+        if code == self.d.OK:
             return True
-        elif returncode == 1:
+        elif code == self.d.CANCEL:
             return False
         else:
             return None
