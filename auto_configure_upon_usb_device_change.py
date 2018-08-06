@@ -62,10 +62,12 @@ def main():
 
 
     def usb_hotplug_callback():
-        call('setxkbmap_secondary_keyboard.sh')
         call('xinput_disable_mouse_acceleration.sh')
         call('xmodmap_corsair_mouse_buttons.sh')
+        call('setxkbmap_my_preferences.sh')
         call('xset_my_preferences.sh')
+        #call('setxkbmap_secondary_keyboard.sh')
+        call('setxkbmap_apple_keyboard.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')
 
     def drm_hotplug_callback():
@@ -91,7 +93,6 @@ def main():
 
     # Call these first:
     call('synclient_asus_x450c.sh')
-    call('setxkbmap_my_preferences.sh')
     usb_hotplug_callback()
 
     context = pyudev.Context()
