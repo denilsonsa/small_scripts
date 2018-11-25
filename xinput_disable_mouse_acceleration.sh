@@ -28,8 +28,14 @@ xsp_dell() {
 # https://wiki.archlinux.org/index.php/Mouse_acceleration#Disabling_mouse_acceleration
 # http://xorg.freedesktop.org/wiki/Development/Documentation/PointerAcceleration/#accelerationprofileinteger
 xsp_microsoft 'Device Accel Profile' -1
-xsp_logitech 'Device Accel Profile' -1
+xsp_logitech  'Device Accel Profile' -1
 xsp_logitech2 'Device Accel Profile' -1
+# https://jlk.fjfi.cvut.cz/arch/manpages/man/libinput.4
+# 2 boolean values (8 bit, 0 or 1), in order "adaptive", "flat"
+xsp_microsoft 'libinput Accel Profile Enabled' 0 1
+xsp_logitech  'libinput Accel Profile Enabled' 0 1
+xsp_logitech2 'libinput Accel Profile Enabled' 0 1
+
 
 # Constant mouse speed:
 xsp_microsoft 'Device Accel Constant Deceleration' 1.5
