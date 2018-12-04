@@ -14,6 +14,9 @@ xsp_logitech() {
 xsp_logitech2() {
 	echo_run xinput set-prop 'Logitech M705' "$@"
 }
+xsp_logitech3() {
+	echo_run xinput set-prop 'pointer:MX Master 2S' "$@"
+}
 xsp_dell() {
 	echo_run xinput set-prop 'PixArt Dell MS116 USB Optical Mouse' "$@"
 }
@@ -30,11 +33,13 @@ xsp_dell() {
 xsp_microsoft 'Device Accel Profile' -1
 xsp_logitech  'Device Accel Profile' -1
 xsp_logitech2 'Device Accel Profile' -1
+xsp_logitech3 'Device Accel Profile' -1
 # https://jlk.fjfi.cvut.cz/arch/manpages/man/libinput.4
 # 2 boolean values (8 bit, 0 or 1), in order "adaptive", "flat"
 xsp_microsoft 'libinput Accel Profile Enabled' 0 1
 xsp_logitech  'libinput Accel Profile Enabled' 0 1
 xsp_logitech2 'libinput Accel Profile Enabled' 0 1
+xsp_logitech3 'libinput Accel Profile Enabled' 0 1
 
 
 # Constant mouse speed:
