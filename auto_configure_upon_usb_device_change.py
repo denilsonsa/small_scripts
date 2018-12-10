@@ -44,73 +44,92 @@ import subprocess
 from threading import Timer
 
 
-def main():
+class SubsystemMonitor:
+    def __init__(self, subsystem, callback, wait_seconds):
+        self.subsystem = subsystem  # String
+        self.callback = callback
+        self.wait_seconds = wait_seconds
+        self.timer = None  # Timer object
+        self.monitor = None  # pyudev.Monitor object
+        self.observer = None  # pyudev.MonitorObserver object
+
+    def reset_timer(self):
+        if self.timer is not None:
+            self.timer.cancel()
+        self.timer = None
+
+    def start_timer(self):
+        self.reset_timer()
+        self.timer = Timer(self.wait_seconds, self.callback)
+        self.timer.start()
+
+    def handle_device_notification(self, device):
+        self.start_timer()
+
+
+def init_monitors():
+    '''Returns a dict that maps a subsystem to a SubsystemMonitor object.
+    '''
+    # Utility functions.
     BASE_PATH = os.path.dirname(os.path.realpath(os.path.abspath(__file__)))
     path = lambda x: os.path.join(BASE_PATH, os.path.expanduser(x))
     call = lambda x, *args: subprocess.call([path(x)] + list(args))
 
-
-    timers = {
-        'usb': None,
-        'drm': None,
-    }
-
-    def reset_timer(which_one):
-        if timers[which_one] is not None:
-            timers[which_one].cancel()
-        timers[which_one] = None
-
-
+    # Runs on USB and Bluetooth events.
     def usb_hotplug_callback():
         call('xinput_disable_mouse_acceleration.sh')
         call('xmodmap_corsair_mouse_buttons.sh')
         call('setxkbmap_my_preferences.sh')
         call('xset_my_preferences.sh')
-        #call('setxkbmap_secondary_keyboard.sh')
+        # call('setxkbmap_secondary_keyboard.sh')
         call('setxkbmap_apple_keyboard.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')
 
+    # Runs on display events.
     def drm_hotplug_callback():
         call('~/.screenlayout/z-auto-detect-displays.sh')
 
-    callbacks = {
-        'usb': usb_hotplug_callback,
-        'drm': drm_hotplug_callback,
-    }
-    timeouts = {
-        'usb': 0.5,
-        'drm': 1,
-    }
+    # Runs only once, when this script is started.
+    def startup_callback():
+        call('synclient_asus_x450c.sh')
+        call('synclient_dell_e7270.sh')
+        usb_hotplug_callback()
+        drm_hotplug_callback()
+
+    # Initializing the monitors.
+    monitors = [
+        SubsystemMonitor('__start__', startup_callback    , 0.0),
+        SubsystemMonitor('usb'      , usb_hotplug_callback, 0.5),
+        SubsystemMonitor('bluetooth', usb_hotplug_callback, 0.5),
+        SubsystemMonitor('drm'      , drm_hotplug_callback, 1.0),
+    ]
+
+    monitor_by_subsystem = {m.subsystem: m for m in monitors}
+    return monitor_by_subsystem
 
 
-    def udev_event_received(device):
-        if device.subsystem in callbacks:
-            reset_timer(device.subsystem)
-            t = Timer(timeouts[device.subsystem], callbacks[device.subsystem])
-            timers[device.subsystem] = t
-            t.start()
+def main():
+    monitor_by_subsystem = init_monitors()
 
+    # Handling fake startup event.
+    startup = monitor_by_subsystem.pop('__start__', None)
+    if startup:
+        startup.handle_device_notification(None)
 
-    # Call these first:
-    call('synclient_asus_x450c.sh')
-    usb_hotplug_callback()
-
+    # Setting up pyudev monitors and observers.
     context = pyudev.Context()
-    # USB devices:
-    monitor_usb = pyudev.Monitor.from_netlink(context)
-    monitor_usb.filter_by(subsystem='usb')
-    observer_usb = pyudev.MonitorObserver(monitor_usb, callback=udev_event_received, daemon=False)
-    # External monitors (HDMI or VGA):
-    monitor_drm = pyudev.Monitor.from_netlink(context)
-    monitor_drm.filter_by(subsystem='drm')
-    observer_drm = pyudev.MonitorObserver(monitor_drm, callback=udev_event_received, daemon=False)
+    for m in monitor_by_subsystem.values():
+        m.monitor = pyudev.Monitor.from_netlink(context)
+        m.monitor.filter_by(subsystem=m.subsystem)
+        m.observer = pyudev.MonitorObserver(
+            m.monitor, callback=m.handle_device_notification, daemon=False)
 
-    observer_usb.start()
-    observer_drm.start()
+    for m in monitor_by_subsystem.values():
+        m.observer.start()
 
     # This will prevent the program from finishing:
-    observer_usb.join()
-    observer_drm.join()
+    for m in monitor_by_subsystem.values():
+        m.observer.join()
 
     # Huh... Does not work? TODO: remove the daemon thing...
     # The program will never exit because the observer threads are non-daemon.
