@@ -15,6 +15,7 @@ xsp_logitech2() {
 	echo_run xinput set-prop 'Logitech M705' "$@"
 }
 xsp_logitech3() {
+	echo_run xinput set-prop 'pointer:Logitech MX Master 2S' "$@"
 	echo_run xinput set-prop 'pointer:MX Master 2S' "$@"
 }
 xsp_dell() {
