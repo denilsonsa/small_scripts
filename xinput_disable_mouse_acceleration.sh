@@ -40,19 +40,19 @@ xsp_logitech2 'Device Accel Profile' -1
 xsp_microsoft 'libinput Accel Profile Enabled' 0 1
 xsp_logitech  'libinput Accel Profile Enabled' 0 1
 xsp_logitech2 'libinput Accel Profile Enabled' 0 1
-#xsp_logitech3 'libinput Accel Profile Enabled' 0 1
+xsp_logitech3 'libinput Accel Profile Enabled' 0 1
 
 # Constant mouse speed:
 xsp_microsoft 'Device Accel Constant Deceleration' 1.5
 
 
 
-if device_id=`xinput --list --id-only 'pointer:MX Master 2S'`; then
-	echo_run xinput set-prop "$device_id" 'libinput Accel Profile Enabled' 0 1
+#if device_id=`xinput --list --id-only 'pointer:MX Master 2S'`; then
+	#echo_run xinput set-prop "$device_id" 'libinput Accel Profile Enabled' 0 1
 	# https://gitlab.freedesktop.org/libinput/libinput/issues/195
 	# https://crbug.com/913403
 	#echo_run xinput set-prop "$device_id" 'libinput Natural Scrolling Enabled' 1
 	# Inverting horizontal scroll buttons: 6 and 7
 	# But this has no effect in Chrome. :(
 	#echo_run xinput set-button-map "$device_id" 1 2 3 4 5 7 6 8 9 10 11 12 13 14 15 16 17 18 19 20
-fi
+#fi
