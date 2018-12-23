@@ -74,10 +74,25 @@ TOUCHPAD_COMMON_SETTINGS = [
     ['set-prop', 'Synaptics Move Speed', 1.0, 1.0, 0.0, 0],
 
     # http://xorg.freedesktop.org/wiki/Development/Documentation/PointerAcceleration/#accelerationprofileinteger
-    # ['set-prop', 'Device Accel Profile', -1],
-    # ['set-prop', 'Device Accel Constant Deceleration', 1.5],
+    # Defaults:
+    # ['set-prop', 'Device Accel Profile', 1],
+    # ['set-prop', 'Device Accel Constant Deceleration', 2.5],
     # ['set-prop', 'Device Accel Adaptive Deceleration', 1.000000],
     # ['set-prop', 'Device Accel Velocity Scaling', 12.500000],
+
+    # Profiles:
+    # -1. none
+    # 1. device-dependent
+    # 2. polynomial
+    # 3. smooth linear
+    # 4. simple
+    # 5. power
+    # 6. linear
+    # 7. limited
+    ['set-prop', 'Device Accel Profile', -1],
+
+    # Tweaking the touchpad cursor speed.
+    ['set-prop', 'Device Accel Constant Deceleration', 1.25],
 ]
 
 
