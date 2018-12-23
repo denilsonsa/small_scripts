@@ -77,12 +77,9 @@ def init_monitors():
 
     # Runs on USB and Bluetooth events.
     def usb_hotplug_callback():
-        call('xinput_disable_mouse_acceleration.sh')
-        call('xmodmap_corsair_mouse_buttons.sh')
-        call('setxkbmap_my_preferences.sh')
+        #call('setxkbmap_my_preferences.sh')
+        call('xinput_configure_all_my_devices.py')
         call('xset_my_preferences.sh')
-        # call('setxkbmap_secondary_keyboard.sh')
-        call('setxkbmap_apple_keyboard.sh')
         call('xsetwacom_my_preferences.sh', 'desktop')
 
     # Runs on display events.
@@ -91,8 +88,6 @@ def init_monitors():
 
     # Runs only once, when this script is started.
     def startup_callback():
-        call('synclient_asus_x450c.sh')
-        call('synclient_dell_e7270.sh')
         usb_hotplug_callback()
         drm_hotplug_callback()
 
