@@ -383,6 +383,10 @@ rules_list = [
             'Sleep Button',
             'USB Camera: USB Camera',
             'Asus WMI hotkeys',
+            'Integrated_Webcam_HD: Integrate',
+            'Dell WMI hotkeys',
+            'DELL Wireless hotkeys',
+            'MX Master 2S',
             'Logitech MX Master 2S',
         ],
         []
@@ -396,7 +400,7 @@ rules_list = [
 # Custom lightweight object type.
 XInputDevice = namedtuple('XInputDevice', 'type id name')
 # Compiling the regex during the module load.
-xinput_regex = re.compile(r'^.   ↳ (.*[^ ]) +\tid=([0-9]+)\t\[slave +(pointer|keyboard) +\([0-9]+\)\]')
+xinput_regex = re.compile(r'^.   ↳ (.*[^ ]) *\tid=([0-9]+)\t\[slave +(pointer|keyboard) +\([0-9]+\)\]')
 xinput_ignored_regex = re.compile(r'^. Virtual core (pointer|keyboard) +\tid=([0-9]+)\t\[master +(pointer|keyboard) +\([0-9]+\)\]')
 
 
