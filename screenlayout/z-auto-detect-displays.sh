@@ -97,7 +97,9 @@ case "${status}" in
 		;;
 	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351a}") ;&
 	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351b}")
-		~/.screenlayout/video-1080p-at-right.sh
+		#~/.screenlayout/video-1080p-at-right.sh
+		#~/.screenlayout/video-1080p-vertical-at-right.sh
+		#~/.screenlayout/video-1080p-vertical-at-left.sh
 		;;
 	"LVDS-1 ${laptop}${nl}HDMI-1 ${asusM51Sn}")
 		~/.screenlayout/video-asusM51Sn-at-right.sh
