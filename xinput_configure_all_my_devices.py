@@ -25,6 +25,9 @@ from collections import defaultdict, namedtuple
 FLAT_ACCEL_PROFILE = [
     ['set-prop', 'libinput Accel Profile Enabled', 0, 1],
 ]
+MIDDLE_CLICK_EMULATION = [
+    ['set-prop', 'libinput Middle Emulation Enabled', 1],
+]
 NATURAL_SCROLLING = [
     ['set-prop', 'libinput Natural Scrolling Enabled', 1],
 
@@ -166,6 +169,20 @@ rules_list = [
             # *NATURAL_SCROLLING,
         ]
     ),
+    (
+        'pointer',
+        [
+            # This is actually a touchpad, but behaves like a mouse.
+            # The touchpad is not configurable without the proprietary Logitech tool.
+            # Pinching gestures generate Ctrl+mouse-scroll input.
+            'Logitech K400 Plus',
+        ],
+        [
+            *FLAT_ACCEL_PROFILE,
+            *NATURAL_SCROLLING,
+            *MIDDLE_CLICK_EMULATION,
+        ]
+    ),
 
     # Keyboard devices.
     (
@@ -181,6 +198,20 @@ rules_list = [
                 'caps:backspace',
                 'numpad:microsoft',
                 'compose:menu',
+            ],
+        ]
+    ),
+    (
+        'keyboard',
+        [
+            'Logitech K400 Plus',
+        ],
+        [
+            # First to clear the previously set options
+            ['setxkbmap', '-option'],
+            [
+                'setxkbmap', 'us', 'altgr-intl',
+                'compose:caps',
             ],
         ]
     ),
