@@ -134,7 +134,7 @@ def extract_from_svg(svgfile, prefix):
 
     mime_to_extension = {
         'image/gif': '.gif',
-        'image/jpeg': '.png',
+        'image/jpeg': '.jpg',
         'image/png': '.png',
         'image/svg+xml': '.svg',  # Inception!?
     }
