@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if pgrep -f 'python.*screenkey' > /dev/null; then
+	# Is "screenkey" already running? If yes, it already listens for the
+	# PrintScreen key, so let's not take any screenshot.
+	true
+else
+	exec flameshot gui
+fi
