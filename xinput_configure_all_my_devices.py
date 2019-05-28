@@ -162,6 +162,7 @@ rules_list = [
             'Logitech M705',
             'Logitech MX Master 2S',
             'MX Master 2S',
+            'MX Master 2S Mouse',
             'PixArt Dell MS116 USB Optical Mouse',
         ],
         [
@@ -418,7 +419,9 @@ rules_list = [
             'Dell WMI hotkeys',
             'DELL Wireless hotkeys',
             'MX Master 2S',
+            'MX Master 2S Keyboard',
             'Logitech MX Master 2S',
+            'Yubico Yubikey 4 OTP+U2F',
         ],
         []
     ),
