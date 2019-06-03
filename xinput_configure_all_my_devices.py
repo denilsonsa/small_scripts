@@ -235,10 +235,10 @@ rules_list = [
                 'setxkbmap', 'us', 'altgr-intl',
                 #'caps:backspace',
                 'numpad:microsoft',
-                'compose:ralt',
+                'compose:rwin',
                 #'altwin:swap_alt_win',
                 'apple:alupckeys',  # Emulate PC keys
-                'lv3:rwin_switch',  # Third level, useful for deadkeys.
+                'lv3:ralt_switch',  # Third level, useful for deadkeys.
             ],
 
             # fn is in place of the usual Insert key.
