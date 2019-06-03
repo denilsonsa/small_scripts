@@ -94,7 +94,7 @@ def init_monitors():
     # Initializing the monitors.
     monitors = [
         SubsystemMonitor('__start__', startup_callback    , 0.0),
-        SubsystemMonitor('usb'      , usb_hotplug_callback, 0.5),
+        SubsystemMonitor('usb'      , usb_hotplug_callback, 1.0),
         SubsystemMonitor('bluetooth', usb_hotplug_callback, 2.0),
         SubsystemMonitor('drm'      , drm_hotplug_callback, 1.0),
     ]
