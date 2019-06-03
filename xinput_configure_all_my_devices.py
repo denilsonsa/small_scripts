@@ -233,7 +233,7 @@ rules_list = [
             # * F13, F14, F15 are PrtScn/SysRq, Scroll Lock, Pause/Break
             [
                 'setxkbmap', 'us', 'altgr-intl',
-                'caps:backspace',
+                #'caps:backspace',
                 'numpad:microsoft',
                 'compose:ralt',
                 #'altwin:swap_alt_win',
