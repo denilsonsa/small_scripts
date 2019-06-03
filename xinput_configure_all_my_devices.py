@@ -236,9 +236,9 @@ rules_list = [
                 'caps:backspace',
                 'numpad:microsoft',
                 'compose:ralt',
-                'altwin:swap_alt_win',
-                'apple:alupckeys',
-                'lv3:rwin_switch',
+                #'altwin:swap_alt_win',
+                'apple:alupckeys',  # Emulate PC keys
+                'lv3:rwin_switch',  # Third level, useful for deadkeys.
             ],
 
             # fn is in place of the usual Insert key.
