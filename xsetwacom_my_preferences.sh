@@ -68,9 +68,13 @@ else
 	NEWAREAY="$AREAY"
 fi
 
-echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
-echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
-
+if [ -z "$(xsetwacom --list devices)" ] ; then
+	true
+	#echo 'No devices found.'
+else
+	echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
+	echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
+fi
 
 # $ xsetwacom --list devices
 # Wacom Graphire4 6x8 stylus      	id: 9	type: STYLUS
