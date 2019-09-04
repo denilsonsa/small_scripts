@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# Problem: it doesn't serve JavaScript with the correct MIME type, thus
+# browsers refuse to run JavaScript.
 
 HAS_PORT=0
 
