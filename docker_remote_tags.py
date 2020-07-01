@@ -22,7 +22,7 @@ except ImportError:
 
 
 URL_BASE = 'https://registry.hub.docker.com/'
-USER_AGENT = 'docker_remote_tags.py <https://bitbucket.org/denilsonsa/small_scripts/src/default/docker_remote_tags.py>'
+USER_AGENT = 'docker_remote_tags.py <https://github.com/denilsonsa/small_scripts/blob/master/docker_remote_tags.py>'
 
 # Quick and dirty implementation of a subset of OAuth 2.
 # A much better idea would be to use requests_oauthlib,
