@@ -1,4 +1,24 @@
 #!/usr/bin/env python3
+#
+# Confused? Don't worry.
+#
+# This script is split into three main parts:
+#
+#  * Common predefined actions
+#      -> These are either xinput or setxkbmap commands for specific settings.
+#
+#  * Rules
+#      -> These map each device name with a list of actions.
+#
+#  * Main code
+#      -> No need to modify any of the main code.
+#
+# Before each part, there is a line full of '#' characters,
+# making it easy to jump between each part.
+#
+# There is no external configuration file, this script is the configuration.
+# Adapt it to your needs, and have fun!
+
 
 import argparse
 import os
@@ -14,7 +34,8 @@ from collections import defaultdict, namedtuple
 # Need help? Try these:
 # * xinput --help
 # * man xinput
-# * man libinput
+# * man -a libinput
+# * man 4 libinput
 # * man synaptics
 # * man xkeyboard-config
 # * /var/log/Xorg.0.log
@@ -55,6 +76,9 @@ NATURAL_SCROLLING = [
     # ['set-button-map', 1, 2, 3, 4, 5, 6, 7, 6, 7],
 ]
 
+TOUCHPAD_TAP_TO_CLICK = [
+    ['set-prop', 'libinput Tapping Enabled', 1],
+]
 
 TOUCHPAD_COMMON_SETTINGS = [
     # Vertical and horizontal scrolling.
@@ -141,16 +165,28 @@ def TOUCHPAD_EDGES_AND_SOFT_BUTTONS(x_range, y_range, x_perc1=40, x_perc2=60, y_
 ######################################################################
 # Rules, mapping device names to actions.
 
-rules_list = [
+RULES_LIST = [
     # Format:
+    #   3-item tuple:
+    #     * 'keyboard' or 'pointer' as string.
+    #     * list of device names (each as a string)
+    #     * list of actions (each as a list of strings or numbers)
+    #
+    # Example:
     # (
     #     'keyboard or pointer',         # Device type as string
-    #     ['Device foo', 'Device bar'],  # List of device names
-    #     [                              # List of "actions"
+    #     [                              # List of device names
+    #         'Device foo',
+    #         'Device bar',
+    #     ],
+    #     [                              # List of actions (for either xinput or setxkbmap)
     #         ['set-prop', 'foo', 1, 2, 3],
-    #         ['setxkbmap', 'foo', 'bar'].
+    #         ['setxkbmap', 'foo', 'bar'],
     #     ],
     # )
+    #
+    # For convenience, you can use list expansion to reuse the same predefined
+    # actions across multiple devices.
 
     # Mouse devices.
     (
@@ -189,16 +225,28 @@ rules_list = [
     (
         'keyboard',
         [
-            'AT Translated Set 2 keyboard',  # Asus X450C laptop
+            # Asus X450C laptop
+            # Dell Latitude 7300 laptop
+            'AT Translated Set 2 keyboard',
         ],
         [
             # First to clear the previously set options
             ['setxkbmap', '-option'],
             [
                 'setxkbmap', 'us', 'altgr-intl',
-                'caps:backspace',
-                'numpad:microsoft',
+
+                # Position of Compose key
                 'compose:menu',
+
+                # Caps Lock behavior
+                #'caps:backspace',
+                #'caps:none',
+
+                # Num Lock on: digits; Shift for arrows. Num Lock off: arrows (as in Windows)
+                #'numpad:microsoft',
+
+                # Numeric keypad always enters digits (as in macOS)
+                'numpad:mac',
             ],
         ]
     ),
@@ -396,31 +444,50 @@ rules_list = [
         ]
     ),
 
+    (
+        'pointer',
+        [
+            # Dell Latitude 7300 laptop
+            'DELL08E0:00 06CB:CD97 Touchpad',
+        ],
+        [
+            *TOUCHPAD_TAP_TO_CLICK,
+            *NATURAL_SCROLLING,
+            #*FLAT_ACCEL_PROFILE,
+        ]
+    ),
+
     # Do-nothing rules.
     # They exist just to avoid reporting these devices as unrecognized.
     (
         'pointer',
         [
             'Virtual core XTEST pointer',
+
+            # Dell Latitude 7300 laptop, fake mouse devices that are not used.
+            'DELL08E0:00 06CB:CD97 Mouse',
+            'PS/2 Generic Mouse',
         ],
         []
     ),
     (
         'keyboard',
         [
-            'Virtual core XTEST keyboard',
-            'Power Button',
+            'Asus WMI hotkeys',
             'Asus Wireless Radio Control',
-            'Video Bus',
+            'DELL Wireless hotkeys',
+            'Dell WMI hotkeys',
+            'Integrated_Webcam_HD: Integrate',
+            'Intel HID 5 button array',
+            'Intel HID events',
+            'Logitech MX Master 2S',
+            'MX Master 2S Keyboard',
+            'MX Master 2S',
+            'Power Button',
             'Sleep Button',
             'USB Camera: USB Camera',
-            'Asus WMI hotkeys',
-            'Integrated_Webcam_HD: Integrate',
-            'Dell WMI hotkeys',
-            'DELL Wireless hotkeys',
-            'MX Master 2S',
-            'MX Master 2S Keyboard',
-            'Logitech MX Master 2S',
+            'Video Bus',
+            'Virtual core XTEST keyboard',
             'Yubico Yubikey 4 OTP+U2F',
         ],
         []
@@ -438,8 +505,10 @@ xinput_regex = re.compile(r'^.   ↳ (.*[^ ]) *\tid=([0-9]+)\t\[slave +(pointer|
 xinput_ignored_regex = re.compile(r'^. Virtual core (pointer|keyboard) +\tid=([0-9]+)\t\[master +(pointer|keyboard) +\([0-9]+\)\]')
 
 
-def rules_as_dict():
+def rules_as_dict(rules_list):
     '''Converts rules_list into a dictionary for fast access.
+
+    It will also convert any non-string parameter into a string.
 
     The result of this function can be used as this:
         d = rules_as_dict()
@@ -461,7 +530,11 @@ def rules_as_dict():
 
 
 def xinput_list():
-    '''Generator that returns XInputDevice objects based on 'xinput list' output.
+    '''Generator that returns XInputDevice objects based on `xinput list` output.
+
+    Note that `xinput list --name-only` is trivial to parse, but it omits the
+    device type (pointer or keyboard). Thus, this function parses the default
+    output format (which is the same as `--short`).
     '''
     p = subprocess.run(
         ['xinput', 'list'],
@@ -499,10 +572,16 @@ def parse_arguments():
         description='Uses xinput to configure available devices to my preferences'
     )
     parser.add_argument(
+        '-n', '-d', '--dry-run', '--dryrun',
+        action='store_true',
+        dest='dryrun',
+        help='Don\'t run any actions for the detected devices. Useful while testing this script, goes well with --verbose.',
+    )
+    parser.add_argument(
         '-v', '--verbose',
         action='store_true',
         dest='verbose',
-        help='Prints each executed command for each device',
+        help='Print each executed command for each device.',
     )
     options = parser.parse_args()
     return options
@@ -510,7 +589,7 @@ def parse_arguments():
 
 def main():
     options = parse_arguments()
-    rules = rules_as_dict()
+    rules = rules_as_dict(RULES_LIST)
 
     # Setting up the 'C' locale to prevent any issue related to localization or translation.
     os.environ['LC_ALL'] = 'C'
@@ -519,16 +598,14 @@ def main():
     for device in xinput_list():
         actions = rules.get((device.type, device.name), None)
         if actions is None:
-            print('Ignoring {0.type} device {0.id} ({0.name})'.format(device))
+            print('Ignoring {0.type} device {0.id} ({0.name}), because there are no rules matching this device'.format(device))
         else:
-            is_this_the_first_action = True
-            if options.verbose and len(actions) == 0:
-                print('There are no actions for {0.type} device {0.id} ({0.name})'.format(device))
-            for action in actions:
-                if options.verbose and is_this_the_first_action:
+            if options.verbose:
+                if len(actions) == 0:
+                    print('There are no actions for {0.type} device {0.id} ({0.name})'.format(device))
+                else:
                     print('Setting up {0.type} device {0.id} ({0.name})'.format(device))
-                is_this_the_first_action = False
-
+            for action in actions:
                 # Preparing the command-line.
                 args = build_cmdline_args(device=device, action=action)
 
@@ -536,12 +613,15 @@ def main():
                 # Only used for debugging purposes.
                 cmdline = ' '.join(shlex.quote(arg) for arg in args)
                 if options.verbose:
-                    print('Running: {0}'.format(cmdline))
+                    print('{1}Running: {0}'.format(cmdline, '(dry-run) ' if options.dryrun else ''))
 
                 # Running! This is the main purpose of this whole script! :)
-                p = subprocess.run(args)
-                if p.returncode != 0:
-                    print('Warning! Command returned {0}: {1}'.format(p.returncode, cmdline))
+                if options.dryrun:
+                    pass
+                else:
+                    p = subprocess.run(args)
+                    if p.returncode != 0:
+                        print('Warning! Command returned {0}: {1}'.format(p.returncode, cmdline))
 
 
 if __name__ == '__main__':
