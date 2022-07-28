@@ -473,6 +473,7 @@ RULES_LIST = [
     (
         'keyboard',
         [
+            'Aeropex by AfterShokz (AVRCP)',
             'Asus WMI hotkeys',
             'Asus Wireless Radio Control',
             'DELL Wireless hotkeys',
