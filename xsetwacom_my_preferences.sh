@@ -9,8 +9,31 @@ DEVICE='Wacom Graphire4 6x8 Pen stylus'
 # These numbers are specific for each device. Get them by running:
 # xsetwacom --set "Your device name here" ResetArea
 # xsetwacom --get "Your device name here" Area
+# TODO: Auto-detect this. Probably.
 AREAX=16704
 AREAY=12064
+
+# TODO: Make this divisor configurable by command-line:
+#  * Either as raw divisor
+#  * Or as a function of one display
+#
+# Let me explain the second case...
+# As a user, I want that one full width of my tablet maps to one full width of my second display (or the full desktop). (or height instead of width)
+# This means several configurable parameters:
+#  - full, half, whatever fraction or multiplier
+#  - width or height
+#  - which display
+# I'll keep this idea noted here for the future.
+DIVISOR=6
+RELATIVEAREAX="$(( AREAX / DIVISOR ))"
+RELATIVEAREAY="$(( AREAY / DIVISOR ))"
+
+# TODO: Rewrite this in a more powerful language (Python!)
+# That would make the code a bit cleaner and easier to maintain.
+# It would also allow for better argument parsing, and allow for use of three possible styles of MapToOutput:
+#  * The screen name (the current method, should work on most systems, except nvidia)
+#  * HEAD-0 (required for nvidia, see the manpage and see a feedback in my e-mail address)
+#  * WxH+X+y (should work everywhere)
 
 # END OF CONFIGURATION
 
@@ -29,18 +52,24 @@ if [ -z "$SCREEN" -o "$SCREEN" = "--help" -o "$SCREEN" = "-help" -o "$SCREEN" = 
 	echo
 	echo 'How to run this script? Run one of the following lines:'
 	CONNECTED_DISPLAYS=`xrandr -q --current | sed -n 's/^\([^ ]\+\) connected .*/\1/p'`
-	for d in desktop $CONNECTED_DISPLAYS; do
+	for d in relative desktop $CONNECTED_DISPLAYS; do
 		echo "  $0 $d"
 	done
 	exit
 fi
 
-if [ "$SCREEN" = "desktop" ]; then
+if [ "$SCREEN" = "relative" ]; then
+	WIDTH="$AREAX"
+	HEIGHT="$AREAY"
+	SCREEN="${RELATIVEAREAX}x${RELATIVEAREAY}+0+0"
+	MODE="relative"
+elif [ "$SCREEN" = "desktop" ]; then
 	# Sample xrandr line:
 	# Screen 0: minimum 320 x 200, current 3286 x 1080, maximum 32767 x 32767
 
 	LINE=`xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p'`
 	read WIDTH HEIGHT <<< "$LINE"
+	MODE="absolute"
 else
 	# Sample xrandr lines:
 	# LVDS1 connected 1366x768+0+312 (normal left inverted right x axis y axis) 309mm x 174mm
@@ -49,6 +78,7 @@ else
 
 	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+.*/\2 \3/p'`
 	read WIDTH HEIGHT <<< "$LINE"
+	MODE="absolute"
 fi
 
 if [ -z "$WIDTH" -o -z "$HEIGHT" ]; then
@@ -56,7 +86,7 @@ if [ -z "$WIDTH" -o -z "$HEIGHT" ]; then
 	exit 1
 fi
 
-# New values respecint aspect ratio:
+# New values respecing aspect ratio:
 RATIOAREAY=$(( AREAX * HEIGHT / WIDTH ))
 RATIOAREAX=$(( AREAY * WIDTH / HEIGHT ))
 
@@ -73,6 +103,7 @@ if [ -z "$(xsetwacom --list devices)" ] ; then
 	#echo 'No devices found.'
 else
 	echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
+	echo_run xsetwacom --set "$DEVICE" Mode "$MODE"
 	echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
 fi
 
@@ -93,3 +124,7 @@ fi
 # * Mode: absolute or relative
 # * Rotate: none, cw, ccw, half
 # * MapToOutput: "next" (but is buggy), "desktop", or a name from xrandr
+
+# See also:
+# * https://wiki.archlinux.org/title/Graphics_tablet
+# * https://gist.github.com/tom-galvin/6c19fe907945d735c045
