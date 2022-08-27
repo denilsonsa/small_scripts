@@ -45,13 +45,13 @@ echo_run() {
 
 SCREEN="$1"
 
-if [ -z "$SCREEN" -o "$SCREEN" = "--help" -o "$SCREEN" = "-help" -o "$SCREEN" = "-h" ]; then
+if [ -z "$SCREEN" ] || [ "$SCREEN" = "--help" ] || [ "$SCREEN" = "-help" ] || [ "$SCREEN" = "-h" ]; then
 	echo 'This script configures a Wacom tablet to one specific monitor, or to '
 	echo 'the entire desktop. In addition, it also reduces the tablet area in '
 	echo 'order to keep the same aspect ratio as the monitor.'
 	echo
 	echo 'How to run this script? Run one of the following lines:'
-	CONNECTED_DISPLAYS=`xrandr -q --current | sed -n 's/^\([^ ]\+\) connected .*/\1/p'`
+	CONNECTED_DISPLAYS=$(xrandr -q --current | sed -n 's/^\([^ ]\+\) connected .*/\1/p')
 	for d in relative desktop $CONNECTED_DISPLAYS; do
 		echo "  $0 $d"
 	done
@@ -67,8 +67,8 @@ elif [ "$SCREEN" = "desktop" ]; then
 	# Sample xrandr line:
 	# Screen 0: minimum 320 x 200, current 3286 x 1080, maximum 32767 x 32767
 
-	LINE=`xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p'`
-	read WIDTH HEIGHT <<< "$LINE"
+	LINE=$(xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p')
+	read -r WIDTH HEIGHT <<< "$LINE"
 	MODE="absolute"
 else
 	# Sample xrandr lines:
@@ -76,12 +76,12 @@ else
 	# VGA1 disconnected (normal left inverted right x axis y axis)
 	# HDMI1 connected 1920x1080+1366+0 (normal left inverted right x axis y axis) 509mm x 286mm
 
-	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+\([^ ]*\) .*/\2 \3 \4/p'`
-	read WIDTH HEIGHT OFFSET <<< "$LINE"
+	LINE=$(xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+\([^ ]*\) .*/\2 \3 \4/p')
+	read -r WIDTH HEIGHT OFFSET <<< "$LINE"
 	MODE="absolute"
 fi
 
-if [ -z "$WIDTH" -o -z "$HEIGHT" ]; then
+if [ -z "$WIDTH" ] || [ -z "$HEIGHT" ]; then
 	echo "Aborting."
 	exit 1
 fi
