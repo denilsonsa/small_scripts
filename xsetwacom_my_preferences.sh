@@ -6,12 +6,14 @@
 # xsetwacom --list devices
 DEVICE='Wacom Graphire4 6x8 Pen stylus'
 
-# These numbers are specific for each device. Get them by running:
-# xsetwacom --set "Your device name here" ResetArea
-# xsetwacom --get "Your device name here" Area
-# TODO: Auto-detect this. Probably.
-AREAX=16704
-AREAY=12064
+# Tablet resolution is specific for each device.
+xsetwacom --set "${DEVICE}" ResetArea
+read -r _ _ AREAX AREAY <<< "$(xsetwacom --get "${DEVICE}" Area)"
+
+if [ -z "${AREAX}" ]; then
+	echo "Device ${DEVICE} not found!"
+  exit 1
+fi
 
 # TODO: Make this divisor configurable by command-line:
 #  * Either as raw divisor
@@ -61,7 +63,7 @@ fi
 if [ "$SCREEN" = "relative" ]; then
 	WIDTH="$AREAX"
 	HEIGHT="$AREAY"
-	SCREEN="${RELATIVEAREAX}x${RELATIVEAREAY}+0+0"
+	OFFSET="0+0"
 	MODE="relative"
 elif [ "$SCREEN" = "desktop" ]; then
 	# Sample xrandr line:
@@ -69,6 +71,7 @@ elif [ "$SCREEN" = "desktop" ]; then
 
 	LINE=$(xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p')
 	read -r WIDTH HEIGHT <<< "$LINE"
+	OFFSET="0+0"
 	MODE="absolute"
 else
 	# Sample xrandr lines:
