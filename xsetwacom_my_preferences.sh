@@ -76,8 +76,8 @@ else
 	# VGA1 disconnected (normal left inverted right x axis y axis)
 	# HDMI1 connected 1920x1080+1366+0 (normal left inverted right x axis y axis) 509mm x 286mm
 
-	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+.*/\2 \3/p'`
-	read WIDTH HEIGHT <<< "$LINE"
+	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+\([^ ]*\) .*/\2 \3 \4/p'`
+	read WIDTH HEIGHT OFFSET <<< "$LINE"
 	MODE="absolute"
 fi
 
@@ -104,7 +104,7 @@ if [ -z "$(xsetwacom --list devices)" ] ; then
 else
 	echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
 	echo_run xsetwacom --set "$DEVICE" Mode "$MODE"
-	echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
+	echo_run xsetwacom --set "$DEVICE" MapToOutput "${WIDTH}x${HEIGHT}+${OFFSET}"
 fi
 
 # $ xsetwacom --list devices
