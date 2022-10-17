@@ -1,5 +1,4 @@
 #!/bin/sh
-# META:ICON = "video-asusM51Sn-at-right.png"
 
 # http://blog.siddv.net/2014/09/turning-laptop-screen-into-external.html
 # I have turned my old Asus M51Sn notebook display into an external monitor.

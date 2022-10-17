@@ -86,28 +86,17 @@ xrandr --prop \
 )"
 
 nl=$'\n'
-laptop='4CA34936000000000015'
-aoc2351a='05E35123B00500002317'
-aoc2351b='05E3752401010101171A'
-asusM51Sn='0ED403001E2000003312'
-philips='410C0100010101010110'
+laptop='06AF2D5600000000001C'
+homeaoc24='05E3752401010101171A' # AOC I2475PXQU
+homeaoc27l='05E3012738E30100331D' # AOC Q27P1 (left)
+homeaoc27r='05E30127CD3B00001D1C' # AOC Q27P1 (right)
 
 case "${status}" in
-	"LVDS-1 ${laptop}")
+	"EDP-1 ${laptop}")
 		~/.screenlayout/video-only-laptop.sh
 		;;
-	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351a}") ;&
-	"LVDS-1 ${laptop}${nl}HDMI-1 ${aoc2351b}")
-		#~/.screenlayout/video-1080p-at-right.sh
-		#~/.screenlayout/video-1080p-vertical-at-right.sh
-		#~/.screenlayout/video-1080p-vertical-at-left.sh
-		;;
-	"LVDS-1 ${laptop}${nl}HDMI-1 ${asusM51Sn}")
-		~/.screenlayout/video-asusM51Sn-at-right.sh
-		;;
-	"LVDS-1 ${laptop}${nl}HDMI-1 ${philips}")
-		#~/.screenlayout/video-1080i-at-top.sh
-		~/.screenlayout/video-720p-at-top.sh
+	"DP-1 ${homeaoc27r}${nl}DP-2 ${homeaoc27l}")
+		~/.screenlayout/video-vv-1440p.sh
 		;;
 	*)
 		echo 'Unknown configuration:'
