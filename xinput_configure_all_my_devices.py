@@ -284,6 +284,7 @@ RULES_LIST = [
                 #'caps:backspace',
                 'numpad:microsoft',
                 'compose:rwin',
+                'compose:caps',
                 #'altwin:swap_alt_win',
                 'apple:alupckeys',  # Emulate PC keys
                 'lv3:ralt_switch',  # Third level, useful for deadkeys.
@@ -478,6 +479,7 @@ RULES_LIST = [
             'Asus Wireless Radio Control',
             'DELL Wireless hotkeys',
             'Dell WMI hotkeys',
+            'HP WMI hotkeys',
             'Integrated_Webcam_HD: Integrate',
             'Intel HID 5 button array',
             'Intel HID events',
@@ -487,6 +489,7 @@ RULES_LIST = [
             'Power Button',
             'Sleep Button',
             'USB Camera: USB Camera',
+            'Vaydeer Vaydeer Multimedia Console Keyboard',
             'Video Bus',
             'Virtual core XTEST keyboard',
             'Yubico Yubikey 4 OTP+U2F',
