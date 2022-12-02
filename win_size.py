@@ -1,9 +1,5 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 # vi:ts=4 sw=4 et
-
-from __future__ import division
-from __future__ import print_function
 
 import argparse
 
@@ -21,7 +17,7 @@ from pygame.locals import *
 def set_size(width, height):
     screen = pygame.display.set_mode((width, height), RESIZABLE)
 
-    size_string = '{0}x{1}'.format(width, height)
+    size_string = "{0}x{1}".format(width, height)
     pygame.display.set_caption(size_string)
     print(size_string)
 
@@ -41,25 +37,26 @@ def change_size(delta_width, delta_height):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description='Opens a window with the specified size.',
-        epilog='''This script uses Pygame to open a window painted with yellow
-        color. Use arrow keys to increase/decrese the window dimensions. The
-        current size <width>x<height> is shown at the window title, and also
-        printed to the stdout. In order to understand why this script was
-        written, read http://my.opera.com/CrazyTerabyte/blog/2011/10/13/nvidia-bug-when-rendering-windows-smaller-than-32x32''',
+        description="Opens a window with the specified size.",
+        epilog="""
+        This script uses Pygame to open a window painted with yellow color. Use
+        arrow keys to increase/decrese the window dimensions. The current size
+        <width>x<height> is shown at the window title, and also printed to the
+        stdout. In order to understand why this script was written, read
+        https://web.archive.org/web/20111117170531/http://my.opera.com:80/CrazyTerabyte/blog/2011/10/13/nvidia-bug-when-rendering-windows-smaller-than-32x32""",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
-        'width',
-        action='store',
+        "width",
+        action="store",
         type=int,
-        help='initial window width'
+        help="initial window width"
     )
     parser.add_argument(
-        'height',
-        action='store',
+        "height",
+        action="store",
         type=int,
-        help='initial window height'
+        help="initial window height"
     )
     args = parser.parse_args()
     return args
@@ -105,5 +102,5 @@ def main():
     pygame.quit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
