@@ -1,30 +1,25 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 # vi:ts=4 sw=4 et
 
-# This script has been tested and developed for Python 2.7.
-# It should be simple to convert it to Python 3.
-# It should be even better to convert it to Python 3.4.
+# This script requires Python 3.4 or later.
+# If you need to run it on earlier versions (why would you?), then please
+# check the git history for an older implementation of this script.
 #
 # This script does not require any external library.
 #
 # Want to extract all embedded images from all SVG files from your system?
 # locate .svg | while read f ; do [ -f "$f" ] && grep -l 'xlink:href.*data:' "$f" ; done | while read f ; do ./extract_embedded_images_from_svg.py -p tmp/`basename "$f"`- "$f" ; done
 
-from __future__ import division
-from __future__ import print_function
-
 import argparse
-import base64
-import errno
-import io
 import re
 import os
 import os.path
 import sys
-import xml.etree.ElementTree
 import textwrap
-import urllib
+import urllib.request
+
+# Consider using defusedxml module if deploying this on production.
+import xml.etree.ElementTree
 
 
 def parse_arguments():
@@ -54,53 +49,17 @@ def parse_arguments():
     return args
 
 
-# http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
-# In Python 3.2, this piece of code can be replaced by a single line.
-def mkdir_p(path):
-    # For Python 3.2 or later:
-    # os.makedirs(path, exist_ok=True)
-
-    # For Python 2:
-    try:
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
-
 def decode_data_url(url):
-    # In Python 3.4, urllib.request already supports data URLs.
-    # http://hg.python.org/cpython/rev/a182367eac5a
-    # return urllib.request.urlopen(data_url).read()
-    #
-    # For earlier Python, we still need this function here.
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs
+    # Default media type for data URLs.
+    # It's nonsensical in the context of this script, though.
+    mediatype = 'text/plain'
 
-    # The code below is based on:
-    # http://hg.python.org/cpython/file/8fe3022af4b3/Lib/urllib/request.py
+    match = re.match(r'^data:([^,;]+)', url)
+    if match:
+        mediatype = match.group(1)
 
-    scheme, data = url.split(':', 1)
-    if scheme != 'data':
-        return None, None
-
-    mediatype, data = data.split(',', 1)
-
-    # Even base64 encoded data URLs might be quoted so unquote in any case:
-    # data = urllib.parse.unquote_to_bytes(data)  # For Python 3
-    data = urllib.unquote(data)  # For Python 2.7
-    if mediatype.endswith(';base64'):
-        # data = base64.decodebytes(data)  # For Python 3
-        data = base64.decodestring(data)  # For Python 2.7
-        mediatype = mediatype[:-7]
-
-    if not mediatype:
-        mediatype = "text/plain;charset=US-ASCII"
-
-    # Discarding the charset information.
-    mediatype = mediatype.partition(';')[0]
-
-    return data, mediatype
+    return urllib.request.urlopen(url).read(), mediatype
 
 
 # Based on:
@@ -128,15 +87,26 @@ def extract_from_svg(svgfile, prefix):
     prefix_dir = parts[0] + parts[1]
     prefix_file = parts[2]
     if prefix_dir:
-        mkdir_p(prefix_dir)
+        os.makedirs(prefix_dir, exist_ok=True)
 
     image_count = 0
 
     mime_to_extension = {
+        # https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image
+        # “The only image formats SVG software must support are JPEG, PNG, and
+        # other SVG files. Animated GIF behavior is undefined.”
         'image/gif': '.gif',
         'image/jpeg': '.jpg',
         'image/png': '.png',
         'image/svg+xml': '.svg',  # Inception!?
+        # To make this script future-proof, I'm adding a few extra image types.
+        # These do not happen in the wild yet (or ever), and are likely
+        # unsupported by most tools.
+        'image/avif': '.avif',
+        'image/bmp': '.bmp',
+        'image/tiff': '.tif',
+        'image/vnd.microsoft.icon': '.ico',
+        'image/webp': '.webp',
     }
 
     for (event, elem) in xml.etree.ElementTree.iterparse(svgfile, ['start']):
