@@ -1,11 +1,9 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 # vi:ts=4 sw=4 et
-
-from __future__ import print_function
 
 import re
 import sys
+
 
 def embedScriptsAndStyles(fin, fout):
     """Reads an HTML file and tries to embed the scripts and stylesheets.
@@ -17,42 +15,51 @@ def embedScriptsAndStyles(fin, fout):
     fin:  File-like input object for reading.
     fout: File-like output object for writing.
     """
-    re_script = re.compile(r''' \s*
-            <script \s [^>]* (?:
+    re_script = re.compile(
+        r"""
+            \s* <script \s [^>]* (?:
                 src="([^">]+)"  |
                 src='([^'>]+)'  |
                 src=([^\s>'"]+)
             ) [^>]* > \s* </script>
-        ''', re.I | re.VERBOSE)
-    re_style = re.compile(r''' \s*
+        """,
+        re.I | re.VERBOSE,
+    )
+    re_style = re.compile(
+        r"""
+            \s*
             <link \s [^>]* rel=['"]?stylesheet['"]? \s [^>]*  (?:
                 href="([^">]+)"  |
                 href='([^'>]+)'  |
                 href=([^\s>'"]+)
-            ) [^>]* >  |
+            ) [^>]* >
+            |
+            \s*
             <link \s [^>]* (?:
                 href="([^">]+)"  |
                 href='([^'>]+)'  |
                 href=([^\s>'"]+)
             ) \s [^>]* rel=['"]?stylesheet['"]? [^>]* >
-        ''', re.VERBOSE)
+        """,
+        re.VERBOSE,
+    )
 
     for line in fin:
-        prefix = ''
+        prefix = ""
         external_file = None
-        suffix = ''
+        suffix = ""
 
         match = re_script.match(line)
         if match:
-            prefix = '<script>\n'
+            prefix = "<script>\n"
             external_file = [g for g in match.groups() if g][0]
-            suffix = '\n</script>\n'
+            suffix = "\n</script>\n"
         else:
             match = re_style.match(line)
             if match:
-                prefix = '<style>\n'
+                prefix = "<style>\n"
                 external_file = [g for g in match.groups() if g][0]
-                suffix = '\n</style>\n'
+                suffix = "\n</style>\n"
 
         if external_file:
             fout.write(prefix)
@@ -68,7 +75,7 @@ def main():
     elif len(sys.argv) == 2:
         embedScriptsAndStyles(open(sys.argv[1]), sys.stdout)
     else:
-        print('Wrong arguments.')
+        print("Wrong arguments.")
 
 
 if __name__ == "__main__":
