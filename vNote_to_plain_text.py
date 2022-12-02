@@ -1,28 +1,13 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 # vi:ts=4 sw=4
 
-from __future__ import with_statement  # This isn't required in Python 2.6
-
+import argparse
 import sys
-import os.path
 import quopri
-from getopt import getopt, GetoptError
 
 
-def print_help():
-    print """
-Usage: %s [files]
-
-This script will convert the vNote text files received from mobile phones
-via bluetooth. These files are simple plain-text at the phone, but are
-received at the computer with many headers and encoded by quoted-printable.
-
-If no parameters are passed, it will convert stdin, else, the passed files
-are converted. In both cases, the output is printed at stdout.
-""".strip() % (MYNAME,)
 # Extra documentation:
-# I receive these files at the computer using 'gnome-obex-server', part of
+# I receive these files at the computer using `gnome-obex-server`, part of
 # gnome-bluetooth package. Then, at the mobile phone, I just choose the note
 # and select Send Via Bluetooth.
 
@@ -50,37 +35,37 @@ def decode_vnote(vnote_as_str):
         x[0] = x[0].partition(";")[0]  # "a;b" -> "a"
     decoded = dict(decoded)
     decoded["BODY"] = quopri.decodestring(decoded["BODY"])
-    # print repr(decoded["BODY"])
-    print decoded["BODY"].decode("latin-1").encode("utf-8")
+    # print(repr(decoded["BODY"]))
+    return decoded["BODY"].decode("latin-1")
 
 
-############################################################
-# Parsing arguments
-MYNAME = os.path.basename(sys.argv[0])
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="""
+            This script will convert the vNote text files received from mobile phones
+            via bluetooth. These files are simple plain-text at the phone, but are
+            received at the computer with many headers and encoded by quoted-printable.
+        """,
+        epilog="""
+            If no parameters are passed, it will convert stdin, else, the passed files
+            are converted. In both cases, the output is printed at stdout.
+        """,
+    )
+    parser.add_argument(
+        "files",
+        nargs="*",
+        type=argparse.FileType("r"),
+        default=[sys.stdin],
+        help="vNote files (or stdin)",
+    )
+    return parser.parse_args()
 
-try:
-    opts, args = getopt(sys.argv[1:], "h", "help".split())
-except GetoptError, e:
-    print str(e)
-    print "Try '%s --help' for more information." % (MYNAME,)
-    sys.exit(2)
 
-for option, value in opts:
-    if option in ("-h", "--help"):
-        print_help()
-        sys.exit()
+def main():
+    options = parse_arguments()
+    for f in options.files:
+        print(decode_vnote(f.read()))
 
-sys.argv = sys.argv[0:1] + args
 
-############################################################
-# Doing the job
-
-if len(args) == 0:
-    args = ["-"]
-
-for f in args:
-    if f == "-":
-        decode_vnote(sys.stdin.read())
-    else:
-        with open(f) as file:
-            decode_vnote(file.read())
+if __name__ == "__main__":
+    main()
