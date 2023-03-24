@@ -236,7 +236,8 @@ RULES_LIST = [
                 'setxkbmap', 'us', 'altgr-intl',
 
                 # Position of Compose key
-                'compose:menu',
+                #'compose:menu',
+                'compose:caps',
 
                 # Caps Lock behavior
                 #'caps:backspace',
