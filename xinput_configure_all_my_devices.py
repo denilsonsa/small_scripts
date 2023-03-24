@@ -469,6 +469,11 @@ RULES_LIST = [
             # Dell Latitude 7300 laptop, fake mouse devices that are not used.
             'DELL08E0:00 06CB:CD97 Mouse',
             'PS/2 Generic Mouse',
+
+            # Dell dock connected to USB-C.
+            # Or possibly any external display. I don't know.
+            'DP-1',
+            'DP-2',
         ],
         []
     ),
@@ -494,6 +499,11 @@ RULES_LIST = [
             'Video Bus',
             'Virtual core XTEST keyboard',
             'Yubico Yubikey 4 OTP+U2F',
+
+            # Dell dock connected to USB-C.
+            # Or possibly any external display. I don't know.
+            'DP-1',
+            'DP-2',
         ],
         []
     ),
