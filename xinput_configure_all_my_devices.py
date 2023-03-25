@@ -255,6 +255,8 @@ RULES_LIST = [
         'keyboard',
         [
             'Logitech K400 Plus',
+
+            'Logitech MX Keys',
         ],
         [
             # First to clear the previously set options
@@ -465,6 +467,9 @@ RULES_LIST = [
         'pointer',
         [
             'Virtual core XTEST pointer',
+
+            # This is a keyboard, not a mouse.
+            'Logitech MX Keys',
 
             # Dell Latitude 7300 laptop, fake mouse devices that are not used.
             'DELL08E0:00 06CB:CD97 Mouse',
