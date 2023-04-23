@@ -200,6 +200,7 @@ RULES_LIST = [
             'MX Master 2S',
             'MX Master 2S Mouse',
             'PixArt Dell MS116 USB Optical Mouse',
+            'YICHIP Wireless Device Mouse',
         ],
         [
             *FLAT_ACCEL_PROFILE,
@@ -471,6 +472,9 @@ RULES_LIST = [
             # This is a keyboard, not a mouse.
             'Logitech MX Keys',
 
+            # Cheap wireless mouse.
+            'YICHIP Wireless Device Consumer Control',
+
             # Dell Latitude 7300 laptop, fake mouse devices that are not used.
             'DELL08E0:00 06CB:CD97 Mouse',
             'PS/2 Generic Mouse',
@@ -504,6 +508,11 @@ RULES_LIST = [
             'Video Bus',
             'Virtual core XTEST keyboard',
             'Yubico Yubikey 4 OTP+U2F',
+
+            # Cheap wireless mouse.
+            'YICHIP Wireless Device',
+            'YICHIP Wireless Device System Control',
+            'YICHIP Wireless Device Consumer Control',
 
             # Dell dock connected to USB-C.
             # Or possibly any external display. I don't know.
