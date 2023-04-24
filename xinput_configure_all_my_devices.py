@@ -200,11 +200,24 @@ RULES_LIST = [
             'MX Master 2S',
             'MX Master 2S Mouse',
             'PixArt Dell MS116 USB Optical Mouse',
-            'YICHIP Wireless Device Mouse',
         ],
         [
             *FLAT_ACCEL_PROFILE,
             # *NATURAL_SCROLLING,
+        ]
+    ),
+    (
+        'pointer',
+        [
+            # Cheap €4.50 mouse that claims to be 1200dpi but only sends mouse
+            # events every two pixels. It also turns itself off to save
+            # battery, and only turns on after clicking (and it sends the click
+            # event).
+            'YICHIP Wireless Device Mouse',
+        ],
+        [
+            *FLAT_ACCEL_PROFILE,
+            ['set-prop', 'libinput Accel Speed', -0.5],
         ]
     ),
     (
