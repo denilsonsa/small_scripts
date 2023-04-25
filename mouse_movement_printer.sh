@@ -130,18 +130,18 @@ BEGIN {
 		# Manhattan distance.
 		xy = abs(dx) + abs(dy)
 
-		printf("delta: %+6d,%+6d", dx, dy)
-		printf("\tpos: %6d,%6d", $3, $4)
+		printf("delta:%+6d,%+6d", dx, dy)
+		printf("  pos:%5d,%5d", $3, $4)
 		if (dx != rx || dy != ry) {
 			# Somehow, the distance between the window-based pointer position
 			# and the root window pointer position diverged.
-			printf("\t(%+6d,%+6d)", rx, ry)
+			printf("  (%+6d,%+6d)", rx, ry)
 		}
 
-		printf("\tdist: %6.1f", dist)
-		printf("\t|x|+|y|: %5d", xy)
+		printf("  dist:%7.1f", dist)
+		printf("  |x|+|y|:%5d", xy)
 
-		printf("\t%s %s", ARROW[1 + sign(dx) + 3 * (1 + sign(dy))], blockbar(xy))
+		printf("  %s %s", ARROW[1 + sign(dx) + 3 * (1 + sign(dy))], blockbar(xy))
 
 		printf("\n")
 	}
