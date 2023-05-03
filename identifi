@@ -1,0 +1,120 @@
+#!/bin/sh
+#
+# This is a simple wrapper for ImageMagick's identify tool.
+# It outputs relevant information in an easy-to-understand format.
+#
+# See also:
+# * https://unix.stackexchange.com/questions/406454/how-to-get-the-dpi-of-an-image-file-png
+# * https://imagemagick.org/script/identify.php
+# * https://imagemagick.org/script/escape.php
+# * https://github.com/ImageMagick/ImageMagick/issues/5950
+
+# Using '%[fx:int(resolution.x)]' instead of '%x' to round to an integer.
+# Using '%[fx:int(resolution.y)]' instead of '%y' to round to an integer.
+
+# Basic file info:
+# %f filename
+# %B file size (bytes)
+#
+# Basic image info:
+# %w width
+# %h height
+# %m format (JPEG, PNG, GIF)
+# %C %[compression] image compression type (JPEG, Zip, LZW)
+# %[type] image type (palette, TrueColor)
+# %z %[bit-depth] depth (8-bit)
+# %[channels] colorspace neumonic followed by total number of channels and meta channels (srgba 5.0)
+#
+# Optional image info:
+# %Q compression quality (useful for JPEG, default=92)
+# %[gamma] gamma (default=0.454545)
+# %[orientation] orientation
+# %x,%y resolution (dpi)
+#
+# GIF-related:
+# %p index of image in current image list (for GIF or other multi-image formats)
+# %D image GIF dispose method
+# %T image time delay (in centi-seconds)
+#
+# Not used:
+# %k %[colors] number of unique colors (expensive to compute on large images)
+# %r %[colorspace]  colorspace (sRGB)
+# %[printsize.x] print size (inches?)
+
+identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*%[gamma]*%[orientation]*%[fx:int(resolution.x)]*%[fx:int(resolution.y)]*%p*%D*%T*%f\n" "$@" | awk '
+	BEGIN {
+		FS="*"
+	}
+	{
+		# For debugging, uncomment this:
+		# print $0
+
+		bytes = $1
+
+		width = $2
+		height = $3
+		format = $4
+		compression = $5
+		type = $6
+		bitdepth = $7
+		channels = $8
+
+		quality = $9
+		gamma = $10
+		orientation = $11
+		resolutionx = $12
+		resolutiony = $13
+
+		imgindex = $14
+		gifdispose = $15
+		timedelay = $16 * 10
+
+		filename = $17
+
+		pixels = width * height
+		megapixels = sprintf("%.1f", pixels / 1000000)
+
+		out = ""
+
+		if (imgindex > 0) {
+			out = out "⤷ " imgindex " "
+		}
+		if (timedelay) {
+			out = out "[" timedelay "ms " gifdispose "] "
+		}
+
+		out = out format " " type " " bitdepth "-bit " channels " "
+
+		if (compression == "JPEG" || quality != 92) {
+			out = out "(" compression " " quality ") "
+		} else {
+			out = out "(" compression ") "
+		}
+
+		out = out width "x" height " pixels " megapixels "MP "
+
+		if (resolutionx != 0 && resolutiony != 0) {
+			mm_width = sprintf("%.0f", width * 25.4 / resolutionx)
+			mm_height = sprintf("%.0f", height * 25.4 / resolutiony)
+
+			out = out "(" mm_width "x" mm_height "mm "
+			if (resolutionx == resolutiony) {
+				out = out resolutionx "dpi) "
+			} else {
+				out = out resolutionx "x" resolutiony "dpi) "
+			}
+		}
+
+		if (orientation != "Undefined") {
+			out = out orientation " orientation "
+		}
+
+		if (gamma != 0.454545) {
+			out = out gamma " gamma "
+		}
+
+		out = out bytes " bytes: " filename
+
+		print out
+	}
+'
