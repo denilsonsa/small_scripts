@@ -87,7 +87,7 @@ identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*
 
 		if (compression == "JPEG" || quality != 92) {
 			out = out "(" compression " " quality ") "
-		} else {
+		} else if (compression != "Undefined") {
 			out = out "(" compression ") "
 		}
 
