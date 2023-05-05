@@ -13,7 +13,7 @@
 # Using '%[fx:int(resolution.y)]' instead of '%y' to round to an integer.
 
 # Basic file info:
-# %f filename
+# %i full filename (%f is just the basename)
 # %B file size (bytes)
 #
 # Basic image info:
@@ -41,7 +41,26 @@
 # %r %[colorspace]  colorspace (sRGB)
 # %[printsize.x] print size (inches?)
 
-identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*%[gamma]*%[orientation]*%[fx:int(resolution.x)]*%[fx:int(resolution.y)]*%p*%D*%T*%f\n" "$@" | awk '
+RED="[31m"
+BOLD="[1m"
+NORMAL="[m"
+
+for f in "$@" ; do
+	# `identify` likes to buffer all the output and flush it only upon exit.
+	# Calling identify for each file shows the results progressively, which is better UX.
+	identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*%[gamma]*%[orientation]*%[fx:int(resolution.x)]*%[fx:int(resolution.y)]*%p*%D*%T*%i\n" "$f"
+	case "$?" in
+		0)
+			# No errors.
+			;;
+		2)
+			# Keyboard interrupt, let's abort.
+			break
+			;;
+		*)
+			echo "${RED}Error${NORMAL} (exit=$?) identifying $f" > /dev/stderr
+	esac
+done | awk '
 	BEGIN {
 		FS="*"
 	}
@@ -113,7 +132,7 @@ identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*
 			out = out gamma " gamma "
 		}
 
-		out = out bytes " bytes: " filename
+		out = out bytes " bytes: " "'"${BOLD}"'" filename "'"${NORMAL}"'"
 
 		print out
 	}
