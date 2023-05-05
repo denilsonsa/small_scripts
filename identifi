@@ -41,9 +41,23 @@
 # %r %[colorspace]  colorspace (sRGB)
 # %[printsize.x] print size (inches?)
 
-RED="[31m"
-BOLD="[1m"
-NORMAL="[m"
+COLOR=1
+
+case "$1" in
+	--nocolor|--no-color|--nocolour|--no-colour)
+		COLOR=0
+		;;
+esac
+
+if [ "$COLOR" = 1 ] ; then
+	RED="[31m"
+	BOLD="[1m"
+	NORMAL="[m"
+else
+	RED=""
+	BOLD=""
+	NORMAL=""
+fi
 
 for f in "$@" ; do
 	# `identify` likes to buffer all the output and flush it only upon exit.
