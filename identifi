@@ -62,6 +62,16 @@ fi
 for f in "$@" ; do
 	# `identify` likes to buffer all the output and flush it only upon exit.
 	# Calling identify for each file shows the results progressively, which is better UX.
+	#
+	# Calling it for each file adds some overhead and makes the overall script
+	# slower for many files. However, by the time this difference is
+	# significant, the user should probably be calling identify directly (with
+	# a custom format).
+	#
+	# Alternatively, I could have used `stdbuf` or `unbuffer`, but that would
+	# add one extra dependency on this script, making it less portable.
+	# https://stackoverflow.com/questions/11337041/force-line-buffering-of-stdout-in-a-pipeline
+
 	identify -units PixelsPerInch -format "%B*%w*%h*%m*%C*%[type]*%z*%[channels]*%Q*%[gamma]*%[orientation]*%[fx:int(resolution.x)]*%[fx:int(resolution.y)]*%p*%D*%T*%i\n" "$f"
 	case "$?" in
 		0)
