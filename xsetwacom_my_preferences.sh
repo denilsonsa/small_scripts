@@ -124,6 +124,11 @@ fi
 # * Mode: absolute or relative
 # * Rotate: none, cw, ccw, half
 # * MapToOutput: "next" (but is buggy), "desktop", or a name from xrandr
+#
+# Other potentially useful tool:
+# * https://gitlab.freedesktop.org/xorg/app/xinput/-/issues/9
+# * xinput map-to-output ...
+# * xinput set-prop ... 'Coordinate Transformation Matrix' ...
 
 # See also:
 # * https://wiki.archlinux.org/title/Graphics_tablet
