@@ -136,7 +136,7 @@ done | awk '
 
 		out = out width "x" height " pixels " megapixels "MP "
 
-		if (resolutionx != 0 && resolutiony != 0) {
+		if (resolutionx > 0 && resolutiony > 0) {
 			mm_width = sprintf("%.0f", width * 25.4 / resolutionx)
 			mm_height = sprintf("%.0f", height * 25.4 / resolutiony)
 
