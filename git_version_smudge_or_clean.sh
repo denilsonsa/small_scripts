@@ -5,17 +5,27 @@
 #   $(< filename)  # instead of $(cat filename)
 #   echo -E
 
-if [ "$1" == '--help' -o "$1" == '-help' -o "$1" == '-h' ] ; then
+if [ -z "$1" ] ; then
+	>&2 echo 'Please read: git_version_smudge_or_clean.sh --help'
+	exit 1
+elif [ "$1" == '--help' -o "$1" == '-help' -o "$1" == '-h' ] ; then
 	cat << EOF
 Usage:
-  ./git_version_smudge_or_clean.sh (clean|smudge) [filename]
+  git_version_smudge_or_clean.sh (clean|smudge) [filename]
 
-If filename is not supplied, reads from stdin and outputs to stdout.
+If filename is not supplied, reads from stdin and outputs to stdout. That's the
+behavior when being called by git itself.
+
 For convenience, if a filename is supplied, will perform the change in-place.
+This will only happen when this script is called manually by the user, because
+git uses stdin/stdout without passing any filename.
 
 
-This script can be set as a custom filter in '.gitconfig' and used in
-'.gitattributes'.
+This script can be set as a custom filter in '.gitconfig' (global or local):
+  git config filter.gitversion.smudge "path/to/git_version_smudge_or_clean.sh smudge"
+  git config filter.gitversion.clean  "path/to/git_version_smudge_or_clean.sh clean"
+And then used in '.gitattributes' in each repository:
+  *.foo filter=gitversion
 
 
 Upon smudging, it will change this line:
@@ -32,7 +42,7 @@ signs is ignored and preserved as is. This behavior makes it easy to embed the
 version hash/date into a literal string in any programming language.
 
 
-These marks are supported: hash, shorthash, datetime, utcdatetime, timestamp.
+These marks are supported: \$hash\$, \$shorthash\$, \$datetime\$, \$utcdatetime\$, \$timestamp\$.
 EOF
 	exit
 fi
