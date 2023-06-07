@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # vi:ts=4 sw=4 et
 
+# Please consider using a better tool instead of this crappy script: https://github.com/eradman/entr
+
 # TODO list:
 #  * Add support for pyinotify (falling back to dumb polling if it's not
 #    available)

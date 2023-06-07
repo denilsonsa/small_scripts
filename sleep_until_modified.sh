@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Please consider using a better tool instead of this crappy script: https://github.com/eradman/entr
 
 SCRIPTNAME=`basename "$0"`
 
