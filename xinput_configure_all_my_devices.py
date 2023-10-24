@@ -217,7 +217,9 @@ RULES_LIST = [
         ],
         [
             *FLAT_ACCEL_PROFILE,
-            ['set-prop', 'libinput Accel Speed', -0.5],
+            #['set-prop', 'libinput Accel Speed', -0.5],
+            # Even at -0.5, it's too sensitive.
+            ['set-prop', 'libinput Accel Speed', -0.66],
         ]
     ),
     (
@@ -461,7 +463,6 @@ RULES_LIST = [
             ['set-prop', 'Synaptics Tap Action', 0, 0, 0, 0, 1, 3, 2],
         ]
     ),
-
     (
         'pointer',
         [
@@ -472,6 +473,20 @@ RULES_LIST = [
             *TOUCHPAD_TAP_TO_CLICK,
             *NATURAL_SCROLLING,
             #*FLAT_ACCEL_PROFILE,
+        ]
+    ),
+
+    # Wacom pen tablet
+    (
+        'pointer',
+        [
+            'Wacom Graphire4 6x8 Pad pad',
+            'Wacom Graphire4 6x8 Pen cursor',
+            'Wacom Graphire4 6x8 Pen eraser',
+            'Wacom Graphire4 6x8 Pen stylus',
+        ],
+        [
+            # TODO: Possibly migrate from xsetwacom_my_preferences.sh to here.
         ]
     ),
 
@@ -502,30 +517,44 @@ RULES_LIST = [
     (
         'keyboard',
         [
+            # Bluetooth headphone.
             'Aeropex by AfterShokz (AVRCP)',
+
+            # Webcam.
+            'Creative Live! Cam Sync 1080p V',
+            'Integrated_Webcam_HD: Integrate',
+            'USB Camera: USB Camera',
+
+            # Laptop (pseudo-)keys.
             'Asus WMI hotkeys',
             'Asus Wireless Radio Control',
             'DELL Wireless hotkeys',
             'Dell WMI hotkeys',
             'HP WMI hotkeys',
-            'Integrated_Webcam_HD: Integrate',
             'Intel HID 5 button array',
             'Intel HID events',
+            'Power Button',
+            'Sleep Button',
+
+            # Awesome mouse.
             'Logitech MX Master 2S',
             'MX Master 2S Keyboard',
             'MX Master 2S',
-            'Power Button',
-            'Sleep Button',
-            'USB Camera: USB Camera',
-            'Vaydeer Vaydeer Multimedia Console Keyboard',
-            'Video Bus',
-            'Virtual core XTEST keyboard',
-            'Yubico Yubikey 4 OTP+U2F',
 
             # Cheap wireless mouse.
             'YICHIP Wireless Device',
             'YICHIP Wireless Device System Control',
             'YICHIP Wireless Device Consumer Control',
+
+            # Volume control knob.
+            'Vaydeer Vaydeer Multimedia Console Keyboard',
+
+            # Hardware authentication device.
+            'Yubico Yubikey 4 OTP+U2F',
+
+            # ???
+            'Video Bus',
+            'Virtual core XTEST keyboard',
 
             # Dell dock connected to USB-C.
             # Or possibly any external display. I don't know.
