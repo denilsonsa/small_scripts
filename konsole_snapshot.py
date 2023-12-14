@@ -195,40 +195,37 @@ def launch_konsoles(saved_snapshot):
     # Make sure we are using the same file format.
     assert saved_snapshot['version'] == 1
 
-    d = None
-    fifo = None
-    try:
-        d = tempfile.mkdtemp()
-        fifo = os.path.join(d, 'konsolefifo')
-        os.mkfifo(fifo, mode=0o600)
-        DEBUG('Fifo file', fifo)
+    # If we let Python delete the temporary file automatically,
+    # the file will be deleted before Konsole has a change to read it.
+    # Thus, I'm collecting all the files here to be deleted after a delay.
+    tmpfiles = []
 
-        for window in saved_snapshot['windows_and_tabs']:
-            cwd = window.get('workdir', '.')
-            s = build_tabsfromfile(window.get('tabs', []))
-            DEBUG('tabs-from-file', '\n' + s)
+    for window in saved_snapshot['windows_and_tabs']:
+        cwd = window.get('workdir', '.')
+        s = build_tabsfromfile(window.get('tabs', []))
+        DEBUG('tabs-from-file', '\n' + s)
+        with tempfile.NamedTemporaryFile('w', delete=False) as f:
+            DEBUG('Temporary file', f.name)
+            f.write(s)
+            f.flush()
+            tmpfiles.append(f)
 
-            with open(fifo, 'w') as f:
-                # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
-                cmdline = [
-                    'konsole',
-                    '--workdir', cwd,
-                    '--tabs-from-file', fifo,
-                    # Let's run a dummy command at the end.
-                    # Otherwise, Konsole will load all the saved tabs, plus a new one for a new shell.
-                    '-e', '/bin/true',
-                ]
-                DEBUG('Launching', cmdline)
-                subprocess.Popen(cmdline, cwd=cwd)
+        # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
+        cmdline = [
+            'konsole',
+            '--workdir', cwd,
+            '--tabs-from-file', f.name,
+            # Let's run a dummy command at the end.
+            # Otherwise, Konsole will load all the saved tabs, plus a new one for a new shell.
+            '-e', '/bin/true',
+        ]
+        DEBUG('Launching', cmdline)
+        subprocess.Popen(cmdline, cwd=cwd)
 
-                DEBUG('Writing to temporary fifo', f.name)
-                f.write(s)
-
-    finally:
-        if fifo:
-            os.remove(fifo)
-        if d:
-            os.rmdir(d)
+    # An arbitrary long amount.
+    time.sleep(8)
+    for f in tmpfiles:
+        os.unlink(f.name)
 
 
 ############################################################
