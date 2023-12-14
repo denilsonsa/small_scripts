@@ -200,32 +200,39 @@ def launch_konsoles(saved_snapshot):
     # Thus, I'm collecting all the files here to be deleted after a delay.
     tmpfiles = []
 
-    for window in saved_snapshot['windows_and_tabs']:
-        cwd = window.get('workdir', '.')
-        s = build_tabsfromfile(window.get('tabs', []))
-        DEBUG('tabs-from-file', '\n' + s)
-        with tempfile.NamedTemporaryFile('w', delete=False) as f:
-            DEBUG('Temporary file', f.name)
-            f.write(s)
-            f.flush()
-            tmpfiles.append(f)
+    try:
+        for window in saved_snapshot['windows_and_tabs']:
+            cwd = window.get('workdir', '.')
+            s = build_tabsfromfile(window.get('tabs', []))
+            DEBUG('tabs-from-file', '\n' + s)
+            with tempfile.NamedTemporaryFile('w', delete=False) as f:
+                DEBUG('Temporary file', f.name)
+                f.write(s)
+                f.flush()
+                tmpfiles.append(f)
 
-        # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
-        cmdline = [
-            'konsole',
-            '--workdir', cwd,
-            '--tabs-from-file', f.name,
-            # Let's run a dummy command at the end.
-            # Otherwise, Konsole will load all the saved tabs, plus a new one for a new shell.
-            '-e', '/bin/true',
-        ]
-        DEBUG('Launching', cmdline)
-        subprocess.Popen(cmdline, cwd=cwd)
+            # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
+            cmdline = [
+                'konsole',
+                '--workdir', cwd,
+                '--tabs-from-file', f.name,
+                # Let's run a dummy command at the end.
+                # Otherwise, Konsole will load all the saved tabs,
+                # plus a new one for a new shell.
+                '-e', '/bin/true',
+            ]
+            DEBUG('Launching', cmdline)
+            subprocess.Popen(cmdline, cwd=cwd)
 
-    # An arbitrary long amount.
-    time.sleep(8)
-    for f in tmpfiles:
-        os.unlink(f.name)
+        # An arbitrary long amount.
+        time.sleep(5)
+        # As an alternative, we could try querying DBUS for when each of the
+        # child processes are available. Sounds like a lot of work, while a
+        # simple sleep works well enough for most use-cases.
+    finally:
+        for f in tmpfiles:
+            DEBUG('Deleting temporary file', f.name)
+            os.remove(f.name)
 
 
 ############################################################
