@@ -1,6 +1,6 @@
 #!/bin/env python3
 #
-# This script is based on https://unix.stackexchange.com/a/593779
+# This script is inspired by https://unix.stackexchange.com/a/593779
 # Official documentation: https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
 
 import argparse
@@ -24,6 +24,11 @@ VERBOSE=False
 
 
 def DEBUG(prefix, *args):
+    '''Debug-printing function.
+
+    Prints a prefix message (in bold), followed by the string representation of
+    all the remaining arguments. But only prints if VERBOSE is enabled.
+    '''
     if VERBOSE:
         print(
             ('\033[1m' + prefix + '\033[m ' if prefix else '')
@@ -33,23 +38,32 @@ def DEBUG(prefix, *args):
 
 
 def xdg_config_dir():
+    '''Returns the configuration directory.
+    '''
     return os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config')
 
 
 def config_filename():
+    '''Returns the default configuration filename.
+    '''
     return os.path.join(xdg_config_dir(), 'konsole_snapshot')
 
 
 def get_bus():
-    # Maybe in the future we want to allow the SystemBus,
-    # or some other bus specified on the commandline.
+    '''Returns a session bus to dbus.
+
+    Maybe in the future we want to allow using the SystemBus, or some other bus
+    specified on the commandline.
+    '''
     return dbus.SessionBus()
 
 
-# This works fine on Linux.
-# It needs to be rewritten for other OSes.
-# In such case, it's certainly better to just use the `psutil` Python module.
 def get_cwd_by_pid(pid):
+    '''Returns the workdir of a process.
+
+    This works fine on Linux. It needs to be rewritten for other OSes.
+    In such case, it's certainly better to just use the `psutil` Python module.
+    '''
     return os.readlink('/proc/{}/cwd'.format(pid))
 
 
@@ -57,8 +71,12 @@ def get_cwd_by_pid(pid):
 # Functions related to saving the Konsole state
 
 
-# Lists the children of a certain dbus node.
 def list_children(bus, service, path):
+    '''Lists the children of a certain dbus node.
+
+    Dbus is complicated. We need to call Introspect and parse the returned XML
+    document.
+    '''
     proxy = bus.get_object(service, path)
     xml = proxy.Introspect(dbus_interface='org.freedesktop.DBus.Introspectable')
     root = ElementTree.fromstring(xml)
@@ -70,12 +88,19 @@ def list_children(bus, service, path):
                 yield name
 
 
-# Returns a JSON-like structure with a snapshot of the currently open
-# Konsole processes, windows and sessions.
 def get_konsoles_snapshot():
+    '''Get a snapshot of the current Konsole state.
+
+    Returns a JSON-like structure with a snapshot of the currently open Konsole
+    processes, windows and sessions.
+    '''
     # Get the list of open konsole services/processes.
     bus = get_bus()
-    services = sorted(str(s) for s in bus.list_names() if str(s).startswith('org.kde.konsole-'))
+    services = sorted(
+        str(s)
+        for s in bus.list_names()
+        if str(s).startswith('org.kde.konsole-')
+    )
     DEBUG('dbus services', services)
 
     saved_windows = []
@@ -91,8 +116,11 @@ def get_konsoles_snapshot():
         for window in windows:
             winproxy = bus.get_object(service, '/Windows/' + window)
             # Each window can have multiple tabs, or sessions.
-            # We do not sort the list of sessions in order to preserve the tab order.
-            sessions = [str(s) for s in winproxy.sessionList(dbus_interface='org.kde.konsole.Window')]
+            # We do not sort the list of sessions to preserve the tab order.
+            sessions = [
+                str(s)
+                for s in winproxy.sessionList(dbus_interface='org.kde.konsole.Window')
+            ]
             DEBUG('service {} window {} sessions'.format(service_id, window), sessions)
             DEBUG('\t'.join(['service', 'window', 'session', 'profile', 'pid', 'fg pid', 'cwd']))
             saved_tabs = []
@@ -108,8 +136,9 @@ def get_konsoles_snapshot():
                 cwd = get_cwd_by_pid(pid)
 
                 # Saving the title is complicated.
-                # Because it is impossible to know if the tab title was modified from the default.
-                # And because Konsole has two title formats: one for local and one for remote.
+                # Because it is impossible to know if the tab title was
+                # modified from the default. And because Konsole has two
+                # title formats: one for local and one for remote.
                 # But --tabs-from-file only supports one title.
                 # So, I'll give up for now. I don't use custom titles anyway.
                 #
@@ -130,7 +159,9 @@ def get_konsoles_snapshot():
 
                 # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
                 # --tabs-from-file supports: title, workdir, profile, command
-                # Out of these, `title` is troublesome to save, and `command` seems less useful and more dangerous.
+                # Out of these...
+                # - `title` is troublesome to save,
+                # - `command` seems less useful and more dangerous.
                 # Thus, I've decided to only save the profile and the workdir.
                 saved_tabs.append({
                     'profile': profile,
@@ -147,6 +178,8 @@ def get_konsoles_snapshot():
 
 
 def save_snapshot_to_config(snapshot, filename):
+    '''Saves a JSON-like snapshot to a JSON file.
+    '''
     DEBUG('Config file', filename)
     with open(filename, 'w') as f:
         json.dump({
@@ -161,6 +194,12 @@ def save_snapshot_to_config(snapshot, filename):
 
 
 def load_snapshot(filename):
+    '''Loads a Konsole snapshot from a JSON file.
+
+    Gracefully returns None if the file is not found.
+    Thus, it's possible to run this script to load a new snapshot even before
+    saving one, without receiving any errors.
+    '''
     DEBUG('Config file', filename)
     try:
         with open(filename, 'r') as f:
@@ -169,7 +208,17 @@ def load_snapshot(filename):
         return None
 
 
-def validate_tabsfromfile_field(tab, field_name, snapshot_name):
+def validate_tabsfromfile_field(tab, snapshot_name, field_name):
+    '''Validate the entries from the saved JSON.
+
+    Konsole's --tabs-from-file parameter has a very specific and very limited
+    syntax. This function tries to avoid substrings that would break the file.
+
+    Parameters:
+    - tab is a dict from the JSON snapshot.
+    - snapshot_name is the name of the attribute in the JSON snapshot.
+    - field_name is the name in the Konsole's tabsfromfile.
+    '''
     value = tab.get(snapshot_name, None)
     if value:
         if ';;' in value:
@@ -182,6 +231,8 @@ def validate_tabsfromfile_field(tab, field_name, snapshot_name):
 
 
 def build_tabsfromfile(tabs):
+    '''Builds a string in the format expected by Konsole's --tabs-from-file.
+    '''
     lines = []
     for tab in tabs:
         fields = [
@@ -195,6 +246,12 @@ def build_tabsfromfile(tabs):
 
 
 def launch_konsoles(saved_snapshot):
+    '''Launches one or multiple Konsole processes.
+
+    Given a JSON-like object representing the Konsole snapshot, this function
+    will launch multiple processes, one for each window, restoring the tabs of
+    each window.
+    '''
     # Gracefully do nothing if the file does not exist.
     if saved_snapshot is None:
         DEBUG('Do nothing, file not found.')
@@ -248,7 +305,7 @@ def launch_konsoles(saved_snapshot):
                     winproxy.sessionList(dbus_interface='org.kde.konsole.Window')
                     for winproxy in proxies
                 ]
-                # It seems sessionList() only returns results after Konsole has finished launching.
+                # It seems sessionList() only returns after Konsole has finished launching.
                 # Anyway, to be on the safe side, I'm doing one additional check:
                 DEBUG('sessions', sessions)
                 if all(len(x) > 0 for x in sessions):
