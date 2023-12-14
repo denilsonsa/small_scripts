@@ -22,6 +22,7 @@ VERBOSE=False
 ############################################################
 # Convenience functions
 
+
 def DEBUG(prefix, *args):
     if VERBOSE:
         print(
@@ -37,6 +38,12 @@ def xdg_config_dir():
 
 def config_filename():
     return os.path.join(xdg_config_dir(), 'konsole_snapshot')
+
+
+def get_bus():
+    # Maybe in the future we want to allow the SystemBus,
+    # or some other bus specified on the commandline.
+    return dbus.SessionBus()
 
 
 # This works fine on Linux.
@@ -65,8 +72,9 @@ def list_children(bus, service, path):
 
 # Returns a JSON-like structure with a snapshot of the currently open
 # Konsole processes, windows and sessions.
-def get_konsoles_snapshot(bus):
+def get_konsoles_snapshot():
     # Get the list of open konsole services/processes.
+    bus = get_bus()
     services = sorted(str(s) for s in bus.list_names() if str(s).startswith('org.kde.konsole-'))
     DEBUG('dbus services', services)
 
@@ -199,6 +207,7 @@ def launch_konsoles(saved_snapshot):
     # the file will be deleted before Konsole has a change to read it.
     # Thus, I'm collecting all the files here to be deleted after a delay.
     tmpfiles = []
+    pids = []
 
     try:
         for window in saved_snapshot['windows_and_tabs']:
@@ -206,10 +215,9 @@ def launch_konsoles(saved_snapshot):
             s = build_tabsfromfile(window.get('tabs', []))
             DEBUG('tabs-from-file', '\n' + s)
             with tempfile.NamedTemporaryFile('w', delete=False) as f:
+                tmpfiles.append(f)
                 DEBUG('Temporary file', f.name)
                 f.write(s)
-                f.flush()
-                tmpfiles.append(f)
 
             # https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
             cmdline = [
@@ -222,14 +230,35 @@ def launch_konsoles(saved_snapshot):
                 '-e', '/bin/true',
             ]
             DEBUG('Launching', cmdline)
-            subprocess.Popen(cmdline, cwd=cwd)
+            p = subprocess.Popen(cmdline, cwd=cwd)
+            pids.append(p.pid)
 
-        # An arbitrary long amount.
-        time.sleep(5)
-        # As an alternative, we could try querying DBUS for when each of the
-        # child processes are available. Sounds like a lot of work, while a
-        # simple sleep works well enough for most use-cases.
+        # Querying dbus, waiting for the Konsole processes to finish launching.
+        DEBUG('Waiting until Konsole is ready')
+        bus = get_bus()
+        time.sleep(0.5)
+        for i in range(10000):
+            try:
+                proxies = [
+                    bus.get_object('org.kde.konsole-{}'.format(pid), '/Windows/1')
+                    for pid in pids
+                ]
+                DEBUG('proxies', proxies)
+                sessions = [
+                    winproxy.sessionList(dbus_interface='org.kde.konsole.Window')
+                    for winproxy in proxies
+                ]
+                # It seems sessionList() only returns results after Konsole has finished launching.
+                # Anyway, to be on the safe side, I'm doing one additional check:
+                DEBUG('sessions', sessions)
+                if all(len(x) > 0 for x in sessions):
+                    break
+            except dbus.exceptions.DBusException:
+                DEBUG('Konsole not ready, querying dbus again')
+                time.sleep(0.5)
     finally:
+        # Deleting all the temporary files only after all Konsole processes
+        # have finished launching.
         for f in tmpfiles:
             DEBUG('Deleting temporary file', f.name)
             os.remove(f.name)
@@ -279,10 +308,8 @@ def main():
     DEBUG('Arguments', args)
 
     # Main logic.
-    bus = dbus.SessionBus()
-
     if args.save:
-        save_snapshot_to_config(get_konsoles_snapshot(bus), args.file)
+        save_snapshot_to_config(get_konsoles_snapshot(), args.file)
     elif args.load:
         launch_konsoles(load_snapshot(args.file))
 
