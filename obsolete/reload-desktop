@@ -1,0 +1,11 @@
+#!/bin/bash
+# ensure desktop background shows correctly on first login
+#
+# This was a script I had on my Raspberry Pi 4.
+# I don't remember exactly why I needed it.
+# I don't remember where it was called from.
+# I didn't even use the video output of that machine more than a couple of times.
+# This script is certainly obsolete.
+
+sleep 7
+xfdesktop --reload
