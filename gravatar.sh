@@ -6,5 +6,5 @@ if [ -z "$1" -o "$1" = "-h" -o "$1" = "-help" -o "$1" = "--help" ] ; then
 	exit 1
 fi
 
-MD5=`echo -n 'denilsonsa@gmail.com' | md5sum | sed 's/ \+- *$//'`
+MD5=`echo -n "$1" | md5sum | sed 's/ \+- *$//'`
 echo "http://www.gravatar.com/avatar/${MD5}.jpg?s=512"
