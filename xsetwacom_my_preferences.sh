@@ -6,12 +6,14 @@
 # xsetwacom --list devices
 DEVICE='Wacom Graphire4 6x8 Pen stylus'
 
-# These numbers are specific for each device. Get them by running:
-# xsetwacom --set "Your device name here" ResetArea
-# xsetwacom --get "Your device name here" Area
-# TODO: Auto-detect this. Probably.
-AREAX=16704
-AREAY=12064
+# Tablet resolution is specific for each device.
+xsetwacom --set "${DEVICE}" ResetArea
+read -r _ _ AREAX AREAY <<< "$(xsetwacom --get "${DEVICE}" Area)"
+
+if [ -z "${AREAX}" ]; then
+	echo "Device ${DEVICE} not found!"
+  exit 1
+fi
 
 # TODO: Make this divisor configurable by command-line:
 #  * Either as raw divisor
@@ -45,13 +47,13 @@ echo_run() {
 
 SCREEN="$1"
 
-if [ -z "$SCREEN" -o "$SCREEN" = "--help" -o "$SCREEN" = "-help" -o "$SCREEN" = "-h" ]; then
+if [ -z "$SCREEN" ] || [ "$SCREEN" = "--help" ] || [ "$SCREEN" = "-help" ] || [ "$SCREEN" = "-h" ]; then
 	echo 'This script configures a Wacom tablet to one specific monitor, or to '
 	echo 'the entire desktop. In addition, it also reduces the tablet area in '
 	echo 'order to keep the same aspect ratio as the monitor.'
 	echo
 	echo 'How to run this script? Run one of the following lines:'
-	CONNECTED_DISPLAYS=`xrandr -q --current | sed -n 's/^\([^ ]\+\) connected .*/\1/p'`
+	CONNECTED_DISPLAYS=$(xrandr -q --current | sed -n 's/^\([^ ]\+\) connected .*/\1/p')
 	for d in relative desktop $CONNECTED_DISPLAYS; do
 		echo "  $0 $d"
 	done
@@ -61,14 +63,15 @@ fi
 if [ "$SCREEN" = "relative" ]; then
 	WIDTH="$AREAX"
 	HEIGHT="$AREAY"
-	SCREEN="${RELATIVEAREAX}x${RELATIVEAREAY}+0+0"
+	OFFSET="0+0"
 	MODE="relative"
 elif [ "$SCREEN" = "desktop" ]; then
 	# Sample xrandr line:
 	# Screen 0: minimum 320 x 200, current 3286 x 1080, maximum 32767 x 32767
 
-	LINE=`xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p'`
-	read WIDTH HEIGHT <<< "$LINE"
+	LINE=$(xrandr -q --current | sed -n 's/^Screen 0:.*, current \([0-9]\+\) x \([0-9]\+\),.*/\1 \2/p')
+	read -r WIDTH HEIGHT <<< "$LINE"
+	OFFSET="0+0"
 	MODE="absolute"
 else
 	# Sample xrandr lines:
@@ -76,12 +79,12 @@ else
 	# VGA1 disconnected (normal left inverted right x axis y axis)
 	# HDMI1 connected 1920x1080+1366+0 (normal left inverted right x axis y axis) 509mm x 286mm
 
-	LINE=`xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+.*/\2 \3/p'`
-	read WIDTH HEIGHT <<< "$LINE"
+	LINE=$(xrandr -q --current | sed -n "s/^${SCREEN}"' connected\( primary\)\? \([0-9]\+\)x\([0-9]\+\)+\([^ ]*\) .*/\2 \3 \4/p')
+	read -r WIDTH HEIGHT OFFSET <<< "$LINE"
 	MODE="absolute"
 fi
 
-if [ -z "$WIDTH" -o -z "$HEIGHT" ]; then
+if [ -z "$WIDTH" ] || [ -z "$HEIGHT" ]; then
 	echo "Aborting."
 	exit 1
 fi
@@ -104,7 +107,7 @@ if [ -z "$(xsetwacom --list devices)" ] ; then
 else
 	echo_run xsetwacom --set "$DEVICE" Area 0 0 "$NEWAREAX" "$NEWAREAY"
 	echo_run xsetwacom --set "$DEVICE" Mode "$MODE"
-	echo_run xsetwacom --set "$DEVICE" MapToOutput "$SCREEN"
+	echo_run xsetwacom --set "$DEVICE" MapToOutput "${WIDTH}x${HEIGHT}+${OFFSET}"
 fi
 
 # $ xsetwacom --list devices
