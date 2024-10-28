@@ -74,6 +74,13 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
+        "-f",
+        "--format",
+        action="store",
+        type=str,
+        help="Image format for saving the output. If omitted, detect by outputfile extension.",
+    )
+    parser.add_argument(
         "inputfile",
         action="store",
         type=argparse.FileType("rb"),
@@ -93,7 +100,7 @@ def main():
     args = parse_args()
 
     with Image.open(args.inputfile) as img:
-        remove_duplicates(img).save(args.outputfile)
+        remove_duplicates(img).save(args.outputfile, format=args.format)
 
 
 if __name__ == "__main__":
