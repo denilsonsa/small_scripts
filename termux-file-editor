@@ -1,0 +1,4 @@
+#!/bin/sh
+# https://wiki.termux.com/wiki/Intents_and_Hooks
+
+exec vim -n "$@"

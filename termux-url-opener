@@ -1,0 +1,22 @@
+#!/bin/bash
+# https://wiki.termux.com/wiki/Intents_and_Hooks
+
+url="$1"
+
+echo "What should we do with this url?"
+echo "$url"
+
+select choice in quit youtube-dl ; do
+	case "$choice" in
+		quit)
+			break
+			;;
+		youtube-dl)
+			youtube-dl "$url"
+			break
+			;;
+	esac
+done
+
+echo 'Exiting in 10 seconds...'
+sleep 10
