@@ -80,7 +80,7 @@ def init_monitors():
         #call('setxkbmap_my_preferences.sh')
         call('xinput_configure_all_my_devices.py')
         call('xset_my_preferences.sh')
-        call('xsetwacom_my_preferences.sh', 'desktop')
+        #call('xsetwacom_my_preferences.sh', 'desktop')
 
     # Runs on display events.
     def drm_hotplug_callback():

@@ -489,6 +489,27 @@ RULES_LIST = [
             # TODO: Possibly migrate from xsetwacom_my_preferences.sh to here.
         ]
     ),
+    (
+        'pointer',
+        [
+            'Wacom Intuos5 touch L Pen pad',
+            'Wacom Intuos5 touch L Pen stylus',
+            'Wacom Intuos5 touch L Pen eraser',
+            'Wacom Intuos5 touch L Pen cursor',
+        ],
+        [
+            # TODO: Possibly migrate from xsetwacom_my_preferences.sh to here.
+        ]
+    ),
+    (
+        'pointer',
+        [
+            'Wacom Intuos5 touch L Finger',
+        ],
+        [
+            *NATURAL_SCROLLING,
+        ]
+    ),
 
     # Do-nothing rules.
     # They exist just to avoid reporting these devices as unrecognized.
