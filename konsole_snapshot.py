@@ -85,7 +85,7 @@ def list_children(bus, service, path):
                 yield name
 
 
-def get_konsoles_snapshot():
+def get_konsoles_snapshot(*, save_tab_titles=False):
     """Get a snapshot of the current Konsole state.
 
     Returns a JSON-like structure with a snapshot of the currently open Konsole
@@ -142,7 +142,7 @@ def get_konsoles_snapshot():
                 # So, I'll give up for now. I don't use custom titles anyway.
                 #
                 # probably_profile_name = sesinterface.title(0)
-                # title_right_now = sesinterface.title(1)
+                title_right_now = sesinterface.title(1)
                 # tab_title_format = sesinterface.tabTitleFormat(0)
                 # remote_title_format = sesinterface.tabTitleFormat(1)
 
@@ -171,6 +171,7 @@ def get_konsoles_snapshot():
                     {
                         "profile": profile,
                         "workdir": cwd,
+                        **({"title": title_right_now} if save_tab_titles else {}),
                     }
                 )
 
@@ -252,6 +253,7 @@ def build_tabsfromfile(tabs):
     for tab in tabs:
         fields = [
             validate_tabsfromfile_field(tab, "profile", "profile"),
+            validate_tabsfromfile_field(tab, "title", "title"),
             validate_tabsfromfile_field(tab, "workdir", "workdir"),
         ]
         fields = [x for x in fields if x]
@@ -374,6 +376,11 @@ def parse_arguments():
         action="store_true",
         help="Load a Konsole snapshot from a file",
     )
+    parser.add_argument(
+        "--tab-titles",
+        action="store_true",
+        help="When saving, also save the current tab titles (Warning: upon loading, the restored tab titles will be frozen and will no longer be updated on directory changes! DON'T use this parameter unless you understand and agree with the consequences.)",
+    )
     args = parser.parse_args()
     return args
 
@@ -388,7 +395,9 @@ def main():
 
     # Main logic.
     if args.save:
-        save_snapshot_to_config(get_konsoles_snapshot(), args.file)
+        save_snapshot_to_config(
+            get_konsoles_snapshot(save_tab_titles=args.tab_titles), args.file
+        )
     elif args.load:
         launch_konsoles(load_snapshot(args.file))
 
