@@ -232,7 +232,7 @@ def validate_tabsfromfile_field(tab, snapshot_name, field_name):
     - field_name is the name in the Konsole's tabsfromfile.
     """
     value = tab.get(snapshot_name, None)
-    if value:
+    if value is not None:
         if ";;" in value:
             raise ValueError(
                 'The string ";;" cannot be present inside {}'.format(snapshot_name)
