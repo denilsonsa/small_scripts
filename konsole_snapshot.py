@@ -1,7 +1,8 @@
 #!/bin/env python3
 #
+# This script is hosted at https://github.com/denilsonsa/small_scripts
 # This script is inspired by https://unix.stackexchange.com/a/593779
-# Official documentation: https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
+# Official Konsole documentation: https://docs.kde.org/stable5/en/konsole/konsole/command-line-options.html
 
 import argparse
 import datetime
